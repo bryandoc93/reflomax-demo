@@ -1,0 +1,408 @@
+
+<h2 class="sr-only">Maqueta interactiva de la landing page de la polla mundialista AAA Reflomax — flujo de 5 pasos para que el cliente haga sus predicciones y registre sus datos</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#F1EFE8;min-height:100vh}
+.page{max-width:480px;margin:0 auto;padding:1rem}
+.hero{background:#042C53;border-radius:16px;padding:2rem 1.5rem;text-align:center;margin-bottom:1.25rem}
+.hero-badge{display:inline-block;background:#378ADD;color:#E6F1FB;font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+.hero-title{font-size:26px;font-weight:500;color:#ffffff;line-height:1.25;margin-bottom:8px}
+.hero-sub{font-size:14px;color:#85B7EB;line-height:1.5;margin-bottom:1.25rem}
+.prizes-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.prize-chip{background:#0C447C;border-radius:10px;padding:.6rem .5rem;text-align:center}
+.prize-icon{font-size:20px;margin-bottom:4px}
+.prize-label{font-size:10px;color:#85B7EB;line-height:1.3}
+.prize-val{font-size:11px;color:#B5D4F4;font-weight:500;margin-top:2px}
+.steps-bar{display:flex;align-items:center;gap:4px;margin-bottom:1.25rem;padding:0 .25rem}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;transition:background .2s,color .2s;cursor:default}
+.step-dot.done{background:#1D9E75;color:#ffffff}
+.step-dot.active{background:#042C53;color:#ffffff}
+.step-dot.pending{background:#D3D1C7;color:#5F5E5A}
+.step-line{flex:1;height:2px;border-radius:1px;transition:background .2s}
+.step-line.done{background:#1D9E75}
+.step-line.pending{background:#D3D1C7}
+.card{background:#ffffff;border-radius:16px;border:.5px solid rgba(0,0,0,.08);padding:1.25rem;margin-bottom:1rem}
+.card-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#888780;margin-bottom:12px}
+.match-card{background:#F1EFE8;border-radius:12px;padding:1rem;margin-bottom:10px}
+.match-date{font-size:11px;color:#888780;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.match-teams{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.team-name{font-size:14px;font-weight:500;color:#2C2C2A;text-align:center;flex:1}
+.vs-badge{font-size:11px;color:#888780;background:#D3D1C7;padding:3px 8px;border-radius:20px;margin:0 8px;flex-shrink:0}
+.options-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.opt-btn{background:#ffffff;border:1.5px solid #D3D1C7;border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;-webkit-tap-highlight-color:transparent}
+.opt-btn:hover{border-color:#378ADD;background:#E6F1FB}
+.opt-btn.selected{border-color:#042C53;background:#042C53}
+.opt-btn.selected .opt-label{color:#ffffff}
+.opt-btn.selected .opt-icon{color:#85B7EB}
+.opt-icon{font-size:16px;color:#888780;margin-bottom:2px}
+.opt-label{font-size:12px;font-weight:500;color:#2C2C2A}
+.score-card{background:#F1EFE8;border-radius:12px;padding:1rem;margin-bottom:10px}
+.score-label{font-size:12px;color:#5F5E5A;margin-bottom:8px}
+.score-inputs{display:flex;align-items:center;gap:8px}
+.score-team{font-size:13px;font-weight:500;color:#2C2C2A;flex:1;text-align:center}
+.score-field{width:48px;height:48px;border-radius:10px;border:1.5px solid #D3D1C7;background:#ffffff;font-size:22px;font-weight:500;color:#042C53;text-align:center;-moz-appearance:textfield;flex-shrink:0}
+.score-field::-webkit-inner-spin-button,.score-field::-webkit-outer-spin-button{-webkit-appearance:none}
+.score-dash{font-size:20px;color:#888780;flex-shrink:0}
+.classify-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.classify-btn{background:#F1EFE8;border:1.5px solid #D3D1C7;border-radius:12px;padding:1rem;text-align:center;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.classify-btn:hover{border-color:#378ADD}
+.classify-btn.selected-yes{border-color:#1D9E75;background:#E1F5EE}
+.classify-btn.selected-yes .cls-icon{color:#0F6E56}
+.classify-btn.selected-yes .cls-label{color:#085041}
+.classify-btn.selected-no{border-color:#A32D2D;background:#FCEBEB}
+.classify-btn.selected-no .cls-icon{color:#A32D2D}
+.classify-btn.selected-no .cls-label{color:#791F1F}
+.cls-icon{font-size:24px;margin-bottom:4px;color:#888780}
+.cls-label{font-size:13px;font-weight:500;color:#5F5E5A}
+.input-wrap{margin-bottom:10px}
+.input-label{font-size:13px;color:#5F5E5A;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.input-field{width:100%;height:48px;border-radius:10px;border:1.5px solid #D3D1C7;background:#ffffff;font-size:15px;color:#2C2C2A;padding:0 14px;outline:none;transition:border-color .15s}
+.input-field:focus{border-color:#042C53}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:.5px solid rgba(0,0,0,.06);font-size:13px}
+.summary-row:last-child{border-bottom:none}
+.sum-label{color:#888780}
+.sum-val{font-weight:500;color:#2C2C2A;text-align:right;flex:1;margin-left:8px}
+.result-chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.chip-green{background:#E1F5EE;color:#085041}
+.chip-gray{background:#F1EFE8;color:#5F5E5A}
+.chip-blue{background:#E6F1FB;color:#0C447C}
+.cta-btn{width:100%;height:52px;border-radius:12px;background:#042C53;color:#ffffff;font-size:15px;font-weight:500;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;margin-top:4px}
+.cta-btn:hover{opacity:.9}
+.cta-btn:disabled{background:#D3D1C7;cursor:default;opacity:1}
+.back-btn{width:100%;height:44px;border-radius:12px;background:transparent;color:#888780;font-size:14px;border:1px solid #D3D1C7;cursor:pointer;margin-top:8px;transition:background .15s}
+.back-btn:hover{background:#F1EFE8}
+.success-card{background:#ffffff;border-radius:16px;padding:2rem 1.5rem;text-align:center;border:.5px solid rgba(0,0,0,.08)}
+.success-icon{width:64px;height:64px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:28px;color:#0F6E56}
+.success-title{font-size:20px;font-weight:500;color:#2C2C2A;margin-bottom:6px}
+.success-sub{font-size:14px;color:#888780;line-height:1.5;margin-bottom:1.25rem}
+.prize-preview{background:#E6F1FB;border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:10px;margin-bottom:10px;border:.5px solid #B5D4F4}
+.pp-icon{font-size:20px;color:#185FA5;flex-shrink:0}
+.pp-text{font-size:13px;color:#0C447C;line-height:1.4}
+.step-screen{display:none}
+.step-screen.active{display:block}
+.nav-hint{font-size:12px;color:#888780;text-align:center;margin-top:.5rem}
+</style>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-badge">AAA Reflomax — Mundial 2026</div>
+  <div class="hero-title">La polla mundialista de Ecuador</div>
+  <div class="hero-sub">Predice los tres partidos de la Tri y gana premios reales. Sin sorteos.</div>
+  <div class="prizes-row">
+    <div class="prize-chip">
+      <div class="prize-icon"><i class="ti ti-mood-happy" aria-hidden="true" style="color:#FAC775;font-size:20px"></i></div>
+      <div class="prize-label">Cualquier acierto</div>
+      <div class="prize-val">Combo Campero</div>
+    </div>
+    <div class="prize-chip">
+      <div class="prize-icon"><i class="ti ti-trophy" aria-hidden="true" style="color:#EF9F27;font-size:20px"></i></div>
+      <div class="prize-label">Aciertas 3/3</div>
+      <div class="prize-val">Kit mundialista</div>
+    </div>
+    <div class="prize-chip">
+      <div class="prize-icon"><i class="ti ti-flame" aria-hidden="true" style="color:#F09595;font-size:20px"></i></div>
+      <div class="prize-label">Premio máximo</div>
+      <div class="prize-val">Chompa + parrilla</div>
+    </div>
+  </div>
+</div>
+
+<div class="steps-bar" id="stepsBar">
+  <div class="step-dot active" id="dot1">1</div>
+  <div class="step-line pending" id="line1"></div>
+  <div class="step-dot pending" id="dot2">2</div>
+  <div class="step-line pending" id="line2"></div>
+  <div class="step-dot pending" id="dot3">3</div>
+  <div class="step-line pending" id="line3"></div>
+  <div class="step-dot pending" id="dot4">4</div>
+  <div class="step-line pending" id="line4"></div>
+  <div class="step-dot pending" id="dot5">5</div>
+</div>
+
+<div class="step-screen active" id="s1">
+  <div class="card">
+    <div class="card-label">Paso 1 de 5 — Partido 1</div>
+    <div class="match-card">
+      <div class="match-date"><i class="ti ti-calendar" aria-hidden="true" style="font-size:14px"></i> 14 de junio · 18:00</div>
+      <div class="match-teams">
+        <div class="team-name">Costa de Marfil</div>
+        <div class="vs-badge">vs</div>
+        <div class="team-name">Ecuador</div>
+      </div>
+      <div class="options-row" id="opts1">
+        <div class="opt-btn" onclick="selectResult(1,'costa')">
+          <div class="opt-icon"><i class="ti ti-chevron-left" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Costa</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(1,'empate')">
+          <div class="opt-icon"><i class="ti ti-equal" aria-hidden="true"></i></div>
+          <div class="opt-label">Empate</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(1,'ecuador')">
+          <div class="opt-icon"><i class="ti ti-chevron-right" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Ecuador</div>
+        </div>
+      </div>
+    </div>
+    <button class="cta-btn" id="btn1" onclick="goStep(2)" disabled>
+      Siguiente partido <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+    <div class="nav-hint">Toca tu predicción para continuar</div>
+  </div>
+</div>
+
+<div class="step-screen" id="s2">
+  <div class="card">
+    <div class="card-label">Paso 2 de 5 — Partido 2</div>
+    <div class="match-card">
+      <div class="match-date"><i class="ti ti-calendar" aria-hidden="true" style="font-size:14px"></i> 20 de junio · 19:00</div>
+      <div class="match-teams">
+        <div class="team-name">Ecuador</div>
+        <div class="vs-badge">vs</div>
+        <div class="team-name">Curazao</div>
+      </div>
+      <div class="options-row" id="opts2">
+        <div class="opt-btn" onclick="selectResult(2,'ecuador')">
+          <div class="opt-icon"><i class="ti ti-chevron-left" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Ecuador</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(2,'empate')">
+          <div class="opt-icon"><i class="ti ti-equal" aria-hidden="true"></i></div>
+          <div class="opt-label">Empate</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(2,'curazao')">
+          <div class="opt-icon"><i class="ti ti-chevron-right" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Curazao</div>
+        </div>
+      </div>
+    </div>
+    <button class="cta-btn" id="btn2" onclick="goStep(3)" disabled>
+      Siguiente partido <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+    <button class="back-btn" onclick="goStep(1)">Volver</button>
+  </div>
+</div>
+
+<div class="step-screen" id="s3">
+  <div class="card">
+    <div class="card-label">Paso 3 de 5 — Partido 3</div>
+    <div class="match-card">
+      <div class="match-date"><i class="ti ti-calendar" aria-hidden="true" style="font-size:14px"></i> 25 de junio · 15:00</div>
+      <div class="match-teams">
+        <div class="team-name">Ecuador</div>
+        <div class="vs-badge">vs</div>
+        <div class="team-name">Alemania</div>
+      </div>
+      <div class="options-row" id="opts3">
+        <div class="opt-btn" onclick="selectResult(3,'ecuador')">
+          <div class="opt-icon"><i class="ti ti-chevron-left" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Ecuador</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(3,'empate')">
+          <div class="opt-icon"><i class="ti ti-equal" aria-hidden="true"></i></div>
+          <div class="opt-label">Empate</div>
+        </div>
+        <div class="opt-btn" onclick="selectResult(3,'alemania')">
+          <div class="opt-icon"><i class="ti ti-chevron-right" aria-hidden="true"></i></div>
+          <div class="opt-label">Gana Alemania</div>
+        </div>
+      </div>
+    </div>
+    <button class="cta-btn" id="btn3" onclick="goStep(4)" disabled>
+      Siguiente <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+    <button class="back-btn" onclick="goStep(2)">Volver</button>
+  </div>
+</div>
+
+<div class="step-screen" id="s4">
+  <div class="card">
+    <div class="card-label">Paso 4 de 5 — Super predicción</div>
+    <div style="font-size:14px;color:#2C2C2A;margin-bottom:14px;line-height:1.5">
+      Esto puede ganarte la parrilla de <strong style="font-weight:500">$195</strong>. Elige un partido y pon el marcador exacto.
+    </div>
+    <div class="score-card">
+      <div class="score-label">Partido 2 — Ecuador vs Curazao</div>
+      <div class="score-inputs">
+        <div class="score-team">Ecuador</div>
+        <input type="number" class="score-field" id="sc2a" min="0" max="20" placeholder="0" oninput="checkScore()">
+        <div class="score-dash">—</div>
+        <input type="number" class="score-field" id="sc2b" min="0" max="20" placeholder="0" oninput="checkScore()">
+        <div class="score-team">Curazao</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#888780;margin-bottom:8px;text-align:center">¿Clasificará Ecuador a octavos?</div>
+    <div class="classify-row">
+      <div class="classify-btn" id="clsYes" onclick="selectClassify('si')">
+        <div class="cls-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+        <div class="cls-label">Sí clasifica</div>
+      </div>
+      <div class="classify-btn" id="clsNo" onclick="selectClassify('no')">
+        <div class="cls-icon"><i class="ti ti-circle-x" aria-hidden="true"></i></div>
+        <div class="cls-label">No clasifica</div>
+      </div>
+    </div>
+    <button class="cta-btn" id="btn4" onclick="goStep(5)" disabled style="margin-top:14px">
+      Continuar <i class="ti ti-arrow-right" aria-hidden="true"></i>
+    </button>
+    <button class="back-btn" onclick="goStep(3)">Volver</button>
+  </div>
+</div>
+
+<div class="step-screen" id="s5">
+  <div class="card">
+    <div class="card-label">Paso 5 de 5 — Tus datos</div>
+    <div style="font-size:13px;color:#888780;margin-bottom:14px;line-height:1.5">Solo los usamos para contactarte si ganas. Nada más.</div>
+    <div class="input-wrap">
+      <div class="input-label"><i class="ti ti-user" aria-hidden="true" style="font-size:16px;color:#888780"></i> Nombre</div>
+      <input type="text" class="input-field" id="inpNombre" placeholder="Tu nombre" oninput="checkContact()">
+    </div>
+    <div class="input-wrap">
+      <div class="input-label"><i class="ti ti-user" aria-hidden="true" style="font-size:16px;color:#888780"></i> Apellido</div>
+      <input type="text" class="input-field" id="inpApellido" placeholder="Tu apellido" oninput="checkContact()">
+    </div>
+    <div class="input-wrap" style="margin-bottom:0">
+      <div class="input-label"><i class="ti ti-device-mobile" aria-hidden="true" style="font-size:16px;color:#888780"></i> Teléfono</div>
+      <input type="tel" class="input-field" id="inpTel" placeholder="09xxxxxxxx" oninput="checkContact()">
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Resumen de tu polla</div>
+    <div class="summary-row">
+      <span class="sum-label">P1 — 14 jun</span>
+      <span class="sum-val" id="sumP1">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">P2 — 20 jun</span>
+      <span class="sum-val" id="sumP2">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">P3 — 25 jun</span>
+      <span class="sum-val" id="sumP3">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">Marcador super</span>
+      <span class="sum-val" id="sumScore">—</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">Ecuador clasifica</span>
+      <span class="sum-val" id="sumCls">—</span>
+    </div>
+  </div>
+  <button class="cta-btn" id="btn5" onclick="submit()" disabled>
+    <i class="ti ti-send" aria-hidden="true"></i> Enviar mi predicción
+  </button>
+  <button class="back-btn" onclick="goStep(4)">Volver</button>
+</div>
+
+<div class="step-screen" id="s6">
+  <div class="success-card">
+    <div class="success-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+    <div class="success-title" id="successName">¡Listo, participante!</div>
+    <div class="success-sub">Tu predicción quedó registrada. Te contactamos por WhatsApp si eres ganador.</div>
+    <div class="prize-preview">
+      <i class="ti ti-mood-happy pp-icon" aria-hidden="true"></i>
+      <div class="pp-text">Si aciertas algún partido de Ecuador ganas un <strong style="font-weight:500">combo Campero o KFC</strong></div>
+    </div>
+    <div class="prize-preview">
+      <i class="ti ti-trophy pp-icon" aria-hidden="true"></i>
+      <div class="pp-text">Si aciertas los 3 partidos te llevas el <strong style="font-weight:500">kit mundialista completo</strong></div>
+    </div>
+    <div class="prize-preview">
+      <i class="ti ti-flame pp-icon" aria-hidden="true" style="color:#993C1D"></i>
+      <div class="pp-text" style="color:#712B13">Si aciertas todo + marcador exacto: <strong style="font-weight:500">chompa + parrilla de $195</strong></div>
+    </div>
+    <button class="cta-btn" onclick="reset()" style="margin-top:1rem">
+      <i class="ti ti-refresh" aria-hidden="true"></i> Ver otra predicción (demo)
+    </button>
+  </div>
+</div>
+
+</div>
+
+<script>
+var picks={p1:null,p2:null,p3:null,classify:null};
+var labels={costa:'Costa de Marfil gana',ecuador:'Gana Ecuador',empate:'Empate',curazao:'Curazao gana',alemania:'Alemania gana'};
+
+function selectResult(partido,val){
+  picks['p'+partido]=val;
+  var container=document.getElementById('opts'+partido);
+  var btns=container.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.classList.remove('selected')});
+  var idx={1:{costa:0,empate:1,ecuador:2},2:{ecuador:0,empate:1,curazao:2},3:{ecuador:0,empate:1,alemania:2}};
+  btns[idx[partido][val]].classList.add('selected');
+  document.getElementById('btn'+partido).disabled=false;
+  updateSummary();
+}
+
+function selectClassify(val){
+  picks.classify=val;
+  document.getElementById('clsYes').className='classify-btn'+(val==='si'?' selected-yes':'');
+  document.getElementById('clsNo').className='classify-btn'+(val==='no'?' selected-no':'');
+  checkScore();
+}
+
+function checkScore(){
+  var a=document.getElementById('sc2a').value;
+  var b=document.getElementById('sc2b').value;
+  var hasScore=(a!==''&&b!=='');
+  document.getElementById('btn4').disabled=!(hasScore&&picks.classify);
+  updateSummary();
+}
+
+function checkContact(){
+  var n=document.getElementById('inpNombre').value.trim();
+  var ap=document.getElementById('inpApellido').value.trim();
+  var t=document.getElementById('inpTel').value.trim();
+  document.getElementById('btn5').disabled=!(n&&ap&&t.length>=7);
+}
+
+function updateSummary(){
+  if(picks.p1)document.getElementById('sumP1').innerHTML='<span class="result-chip chip-blue">'+labels[picks.p1]+'</span>';
+  if(picks.p2)document.getElementById('sumP2').innerHTML='<span class="result-chip chip-blue">'+labels[picks.p2]+'</span>';
+  if(picks.p3)document.getElementById('sumP3').innerHTML='<span class="result-chip chip-blue">'+labels[picks.p3]+'</span>';
+  var a=document.getElementById('sc2a')?document.getElementById('sc2a').value:'';
+  var b=document.getElementById('sc2b')?document.getElementById('sc2b').value:'';
+  if(a!==''&&b!=='')document.getElementById('sumScore').innerHTML='<span class="result-chip chip-green">Ecuador '+a+' — '+b+' Curazao</span>';
+  if(picks.classify)document.getElementById('sumCls').innerHTML='<span class="result-chip '+(picks.classify==='si'?'chip-green':'chip-gray')+'">'+(picks.classify==='si'?'Sí clasifica':'No clasifica')+'</span>';
+}
+
+function goStep(n){
+  for(var i=1;i<=6;i++){
+    var s=document.getElementById('s'+i);
+    if(s)s.className='step-screen'+(i===n?' active':'');
+  }
+  updateDots(n);
+  if(n===5)updateSummary();
+}
+
+function updateDots(current){
+  for(var i=1;i<=5;i++){
+    var d=document.getElementById('dot'+i);
+    if(!d)continue;
+    if(i<current){d.className='step-dot done';d.innerHTML='<i class="ti ti-check" style="font-size:13px"></i>'}
+    else if(i===current){d.className='step-dot active';d.textContent=i}
+    else{d.className='step-dot pending';d.textContent=i}
+    if(i<5){var l=document.getElementById('line'+i);if(l)l.className='step-line'+(i<current?' done':' pending')}
+  }
+}
+
+function submit(){
+  var nombre=document.getElementById('inpNombre').value.trim();
+  document.getElementById('successName').textContent='Listo, '+nombre+'!';
+  goStep(6);
+}
+
+function reset(){
+  picks={p1:null,p2:null,p3:null,classify:null};
+  ['inpNombre','inpApellido','inpTel'].forEach(function(id){document.getElementById(id).value=''});
+  ['sc2a','sc2b'].forEach(function(id){document.getElementById(id).value=''});
+  ['btn1','btn2','btn3','btn4','btn5'].forEach(function(id){document.getElementById(id).disabled=true});
+  ['opts1','opts2','opts3'].forEach(function(id){document.getElementById(id).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('selected')})});
+  document.getElementById('clsYes').className='classify-btn';
+  document.getElementById('clsNo').className='classify-btn';
+  ['sumP1','sumP2','sumP3','sumScore','sumCls'].forEach(function(id){document.getElementById(id).textContent='—'});
+  goStep(1);
+}
+</script>
