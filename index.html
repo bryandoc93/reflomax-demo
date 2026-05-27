@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAA Reflomax — Demo E-Commerce</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#042C53;--blue:#0C447C;--lblue:#185FA5;--xblue:#B5D4F4;
+  --amber:#EF9F27;--amber2:#FAC775;--green:#3B6D11;--lgreen:#EAF3DE;
+  --gtext:#27500A;--gray:#5F5E5A;--lgray:#F1EFE8;--bgray:#D3D1C7;
+  --white:#fff;--red:#A32D2D;--lred:#FCEBEB;--dark-amber:#412402;
+  --bg:#F8F9FA;--border:#E2E6EA;--radius:10px;--radius-sm:6px;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:#1a1a2e;min-height:100vh}
+
+/* ── HEADER ── */
+.site-header{background:var(--navy);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.header-brand{display:flex;align-items:center;gap:10px}
+.logo-box{width:34px;height:34px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--xblue);flex-shrink:0}
+.brand-name{font-size:16px;font-weight:700;color:#fff}
+.brand-sub{font-size:10px;color:var(--xblue)}
+.demo-badge{background:var(--amber);color:var(--dark-amber);font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px}
+
+/* ── VIEW NAV ── */
+.view-nav{display:flex;gap:0;margin:20px auto;max-width:900px;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.vnav-btn{flex:1;padding:12px 8px;font-size:13px;font-weight:600;background:#fff;color:var(--gray);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;border-right:1px solid var(--border);transition:all .18s}
+.vnav-btn:last-child{border-right:none}
+.vnav-btn.on{background:var(--navy);color:var(--xblue)}
+.vnav-btn i{font-size:15px}
+
+/* ── SCREEN WRAPPER ── */
+.screens{max-width:900px;margin:0 auto 40px}
+.screen{display:none}
+.screen.on{display:block}
+.mock{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:6px 20px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap}
+.tb-txt{font-size:11px;color:var(--xblue);display:flex;align-items:center;gap:4px}
+.tb-dot{color:var(--lblue);font-size:8px}
+
+/* ── NAV ── */
+.snav{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:50px;border-bottom:1px solid var(--border);background:#fff}
+.snav-logo{display:flex;align-items:center;gap:8px}
+.snav-logo-box{width:28px;height:28px;background:var(--blue);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--xblue)}
+.snav-name{font-size:13px;font-weight:700;color:#1a1a2e}
+.snav-sub{font-size:9px;color:var(--gray)}
+.snav-links{display:flex;gap:16px}
+.snav-link{font-size:12px;color:var(--gray);cursor:pointer;text-decoration:none}
+.snav-link.cur{color:var(--navy);font-weight:600}
+.snav-actions{display:flex;align-items:center;gap:8px}
+.snav-btn{font-size:11px;padding:5px 11px;border:1px solid var(--border);border-radius:6px;background:#fff;color:#1a1a2e;cursor:pointer;display:flex;align-items:center;gap:4px}
+.snav-btn.pr{background:var(--navy);color:#fff;border-color:var(--navy)}
+.cart-badge{font-size:9px;background:var(--navy);color:#fff;border-radius:99px;padding:1px 5px;margin-left:2px}
+
+/* ── HERO ── */
+.hero{display:grid;grid-template-columns:1fr 1fr}
+.hero-l{background:var(--navy);padding:28px 24px;display:flex;flex-direction:column;justify-content:center}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:var(--xblue);font-size:10px;padding:4px 10px;border-radius:99px;margin-bottom:12px;width:fit-content}
+.hero-h1{font-size:22px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:8px}
+.hero-h1 em{color:var(--amber);font-style:normal}
+.hero-p{font-size:12px;color:var(--xblue);line-height:1.55;margin-bottom:18px}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.hbtn-p{background:var(--amber);color:var(--dark-amber);font-size:12px;font-weight:700;padding:9px 16px;border-radius:7px;border:none;cursor:pointer}
+.hbtn-s{background:transparent;color:var(--xblue);font-size:12px;padding:9px 16px;border-radius:7px;border:1px solid var(--lblue);cursor:pointer}
+.hero-r{background:var(--blue);display:grid;grid-template-columns:1fr 1fr}
+.hero-prod{background:var(--lblue);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 10px;border-right:1px solid var(--blue);border-bottom:1px solid var(--blue);cursor:pointer;transition:background .15s}
+.hero-prod:hover{background:#1a6bb5}
+.hero-prod i{font-size:26px;color:var(--amber);margin-bottom:6px}
+.hero-prod-name{font-size:9px;color:var(--xblue);text-align:center;line-height:1.3}
+.hero-prod-price{font-size:12px;color:#fff;font-weight:700;margin-top:3px}
+
+/* ── TRUST ── */
+.trust{background:var(--lgray);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray)}
+.trust-item i{font-size:14px;color:var(--lblue)}
+
+/* ── SECTIONS ── */
+.sec{padding:20px}
+.sec-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:15px;font-weight:700;color:#1a1a2e}
+.sec-link{font-size:11px;color:var(--lblue);cursor:pointer}
+.divider{height:1px;background:var(--border);margin:0 20px 20px}
+
+/* ── CATEGORIES ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.cat-card{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.cat-card:hover{border-color:var(--lblue);box-shadow:0 2px 8px rgba(24,95,165,.1)}
+.cat-img{height:52px;background:var(--lgray);display:flex;align-items:center;justify-content:center}
+.cat-img i{font-size:22px;color:var(--lblue)}
+.cat-info{padding:7px 9px;border-top:1px solid var(--border)}
+.cat-nm{font-size:11px;font-weight:600;color:#1a1a2e}
+.cat-ct{font-size:10px;color:var(--gray);margin-top:1px}
+
+/* ── PRODUCTS ── */
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.prod-card{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.prod-card:hover{border-color:var(--lblue);box-shadow:0 2px 10px rgba(24,95,165,.1)}
+.prod-img{height:72px;background:var(--lgray);display:flex;align-items:center;justify-content:center;position:relative}
+.prod-img i{font-size:28px;color:var(--gray)}
+.pbadge{position:absolute;top:6px;left:6px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px}
+.pb-blue{background:#E6F1FB;color:var(--blue)}
+.pb-green{background:var(--lgreen);color:var(--gtext)}
+.pb-amber{background:#FAEEDA;color:#633806}
+.prod-body{padding:9px 10px}
+.prod-stars{display:flex;align-items:center;gap:2px;margin-bottom:3px}
+.prod-stars i{font-size:10px;color:#BA7517}
+.prod-stars span{font-size:10px;color:var(--gray);margin-left:3px}
+.prod-nm{font-size:12px;font-weight:600;color:#1a1a2e;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod-spec{font-size:10px;color:var(--gray);margin-bottom:7px}
+.prod-foot{display:flex;align-items:center;justify-content:space-between}
+.prod-price{font-size:13px;font-weight:700;color:#1a1a2e}
+.prod-price-sub{font-size:10px;color:var(--gray)}
+.prod-cta{font-size:10px;padding:5px 9px;background:var(--navy);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:background .15s}
+.prod-cta:hover{background:var(--blue)}
+
+/* ── B2B BANNER ── */
+.b2b-strip{margin:20px;background:var(--navy);border-radius:var(--radius);padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.b2b-l{flex:1}
+.b2b-ey{font-size:10px;color:var(--amber);font-weight:700;letter-spacing:.05em;margin-bottom:4px}
+.b2b-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.b2b-sub{font-size:11px;color:var(--xblue);line-height:1.45;margin-bottom:10px}
+.b2b-stats{display:flex;gap:18px}
+.b2b-stat-n{font-size:18px;font-weight:700;color:#fff}
+.b2b-stat-l{font-size:10px;color:var(--xblue)}
+.b2b-cta{background:var(--amber);color:var(--dark-amber);font-size:12px;font-weight:700;padding:10px 16px;border-radius:7px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .15s}
+.b2b-cta:hover{opacity:.9}
+
+/* ── INDUSTRIES ── */
+.ind-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.ind-card{background:var(--lgray);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.ind-card:hover{background:#fff;border-color:var(--lblue)}
+.ind-card i{font-size:22px;color:var(--lblue);margin-bottom:5px;display:block}
+.ind-nm{font-size:11px;font-weight:600;color:#1a1a2e}
+.ind-desc{font-size:10px;color:var(--gray);margin-top:2px}
+
+/* ── REVIEWS ── */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.rev-card{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.rev-stars{display:flex;gap:2px;margin-bottom:6px}
+.rev-stars i{font-size:12px;color:#BA7517}
+.rev-txt{font-size:11px;color:var(--gray);line-height:1.5;margin-bottom:9px;font-style:italic}
+.rev-auth{display:flex;align-items:center;gap:7px}
+.rev-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.rev-nm{font-size:11px;font-weight:600;color:#1a1a2e}
+.rev-co{font-size:10px;color:var(--gray)}
+
+/* ── CERT STRIP ── */
+.cert-strip{margin:0 20px 20px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.cert-chip{display:flex;align-items:center;gap:5px;background:var(--lgreen);border:1px solid #97C459;border-radius:6px;padding:5px 10px}
+.cert-chip-lbl{font-size:10px;font-weight:600;color:var(--gtext)}
+.cert-dl{display:flex;align-items:center;gap:5px;background:#E6F1FB;border:1px solid var(--xblue);border-radius:6px;padding:5px 10px;cursor:pointer}
+.cert-dl-lbl{font-size:10px;color:var(--blue);font-weight:600}
+
+/* ── FOOTER ── */
+.home-footer{background:var(--lgray);border-top:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.hf-brand{font-size:11px;font-weight:600;color:#1a1a2e}
+.hf-links{display:flex;gap:12px}
+.hf-link{font-size:10px;color:var(--gray);text-decoration:none}
+.wa-btn{display:flex;align-items:center;gap:5px;background:#25D366;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;border:none;cursor:pointer}
+
+/* ── BREADCRUMB ── */
+.bc-bar{padding:9px 20px;border-bottom:1px solid var(--border);background:var(--lgray);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bc{font-size:11px;color:var(--gray)}
+.bc-link{font-size:11px;color:var(--lblue);cursor:pointer;text-decoration:none}
+.bc-sep{font-size:10px;color:var(--bgray);margin:0 2px}
+.bc-cur{font-size:11px;color:#1a1a2e;font-weight:600}
+
+/* ── PDP ── */
+.pdp-body{display:grid;grid-template-columns:1fr 1fr}
+.pdp-gallery{border-right:1px solid var(--border);padding:16px}
+.main-img{background:var(--lgray);border-radius:var(--radius-sm);border:1px solid var(--border);height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;position:relative}
+.main-img i{font-size:52px;color:var(--gray)}
+.cert-badge-img{position:absolute;top:8px;right:8px;background:var(--lgreen);color:var(--gtext);font-size:9px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid #97C459}
+.thumb-row{display:flex;gap:7px}
+.thumb{width:52px;height:44px;border-radius:7px;background:var(--lgray);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:2px;transition:border-color .15s}
+.thumb.act{border:2px solid var(--lblue)}
+.thumb:hover{border-color:var(--lblue)}
+.thumb i{font-size:16px;color:var(--gray)}
+.thumb-lbl{font-size:8px;color:var(--gray)}
+
+.pdp-buy{padding:16px;display:flex;flex-direction:column;gap:10px}
+.pdp-cat{font-size:10px;color:var(--lblue);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.pdp-title{font-size:18px;font-weight:700;color:#1a1a2e;line-height:1.2;margin-bottom:2px}
+.pdp-sku{font-size:10px;color:var(--gray)}
+.pdp-stars-row{display:flex;align-items:center;gap:5px}
+.pdp-stars-row i{font-size:13px;color:#BA7517}
+.pdp-rating{font-size:11px;color:var(--gray)}
+.stock-pill{display:inline-flex;align-items:center;gap:4px;background:var(--lgreen);color:var(--gtext);font-size:10px;font-weight:600;padding:3px 10px;border-radius:99px}
+.stock-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+.price-block{background:var(--lgray);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
+.price-main{font-size:24px;font-weight:700;color:#1a1a2e}
+.price-u{font-size:12px;color:var(--gray);margin-left:4px}
+.price-rollo{font-size:11px;color:var(--gray);margin-top:2px}
+.vol-tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.vol-tbl th{font-size:10px;color:var(--gray);font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid var(--border)}
+.vol-tbl td{font-size:11px;color:#1a1a2e;padding:4px 6px;border-bottom:1px solid var(--border)}
+.vol-tbl tr:last-child td{border-bottom:none}
+.vol-best{background:#E6F1FB;color:var(--blue);font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:600}
+
+.unit-toggle{display:flex;gap:5px}
+.unit-btn{font-size:11px;padding:5px 12px;border-radius:99px;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--gray);transition:all .15s}
+.unit-btn.on{background:var(--navy);color:var(--xblue);border-color:var(--navy)}
+.qty-row{display:flex;align-items:center;gap:10px}
+.qty-lbl{font-size:12px;color:var(--gray)}
+.qty-ctrl{display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qty-btn{width:30px;height:30px;background:var(--lgray);border:none;cursor:pointer;font-size:16px;color:#1a1a2e;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.qty-btn:hover{background:var(--bgray)}
+.qty-val{width:42px;height:30px;text-align:center;font-size:13px;font-weight:700;color:#1a1a2e;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);background:#fff}
+.qty-total{font-size:12px;color:var(--gray)}
+.qty-total span{color:#1a1a2e;font-weight:700}
+
+.cta-add{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s}
+.cta-add:hover{background:var(--blue)}
+.cta-quote{width:100%;padding:9px;background:#fff;color:var(--blue);border:1.5px solid var(--lblue);border-radius:var(--radius-sm);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.cta-quote:hover{background:#E6F1FB}
+.cta-wa-btn{width:100%;padding:9px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+
+.pdp-del{display:flex;flex-direction:column;gap:4px}
+.pdp-del-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray)}
+.pdp-del-row i{font-size:14px;color:var(--gray)}
+
+.specs-sec{border-top:1px solid var(--border);padding:16px}
+.specs-title{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:12px}
+.specs-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.kpi{background:var(--lgray);border-radius:var(--radius-sm);padding:10px 12px;text-align:center;border:1px solid var(--border)}
+.kpi-val{font-size:18px;font-weight:700;color:#1a1a2e}
+.kpi-lbl{font-size:10px;color:var(--gray);margin-top:2px}
+.spec-tbl{width:100%;border-collapse:collapse}
+.spec-tbl tr:nth-child(even){background:var(--lgray)}
+.spec-tbl td{font-size:11px;padding:6px 9px;border-bottom:1px solid var(--border)}
+.spec-tbl td:first-child{color:var(--gray);width:44%;font-weight:600}
+.spec-tbl tr:last-child td{border-bottom:none}
+.cert-row-pdp{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+
+.apps-sec{border-top:1px solid var(--border);padding:16px}
+.apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.app-chip{background:var(--lgray);border-radius:var(--radius-sm);padding:10px;text-align:center;border:1px solid var(--border)}
+.app-chip i{font-size:20px;color:var(--lblue);margin-bottom:4px;display:block}
+.app-nm{font-size:11px;color:#1a1a2e;font-weight:600}
+.app-d{font-size:10px;color:var(--gray);margin-top:2px}
+
+.rev-sec{border-top:1px solid var(--border);padding:16px}
+.rev-sum{display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:12px;background:var(--lgray);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.rev-score-n{font-size:30px;font-weight:700;color:#1a1a2e}
+.rev-score-stars{display:flex;gap:2px;justify-content:center;margin:2px 0}
+.rev-score-stars i{font-size:12px;color:#BA7517}
+.rev-ct{font-size:10px;color:var(--gray)}
+.rev-bars{flex:1}
+.rev-bar-row{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.rev-bar-lbl{font-size:10px;color:var(--gray);width:12px}
+.rev-bar-bg{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+.rev-bar-fill{height:100%;background:#BA7517;border-radius:99px}
+.rev-bar-ct{font-size:10px;color:var(--gray);width:16px;text-align:right}
+.rev-list{display:flex;flex-direction:column;gap:12px}
+.rev-item{border-bottom:1px solid var(--border);padding-bottom:12px}
+.rev-item:last-child{border-bottom:none;padding-bottom:0}
+.rev-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.rev-auth-row{display:flex;align-items:center;gap:7px}
+.rev-av2{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.rev-nm2{font-size:12px;font-weight:600;color:#1a1a2e}
+.rev-co2{font-size:10px;color:var(--gray)}
+.rev-date{font-size:10px;color:var(--gray)}
+.rev-stars2{display:flex;gap:2px;margin-bottom:3px}
+.rev-stars2 i{font-size:11px;color:#BA7517}
+.rev-txt2{font-size:12px;color:var(--gray);line-height:1.5}
+.ver-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:var(--gtext);background:var(--lgreen);padding:2px 7px;border-radius:4px;margin-top:4px}
+
+.related-sec{border-top:1px solid var(--border);padding:16px;background:var(--lgray)}
+.rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rel-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:border-color .15s}
+.rel-card:hover{border-color:var(--lblue)}
+.rel-img{height:50px;background:var(--lgray);display:flex;align-items:center;justify-content:center}
+.rel-img i{font-size:22px;color:var(--gray)}
+.rel-body{padding:8px 10px}
+.rel-nm{font-size:11px;font-weight:600;color:#1a1a2e;margin-bottom:2px}
+.rel-price{font-size:12px;color:var(--blue);font-weight:700}
+
+/* ── B2B PORTAL ── */
+.b2b-topbar{background:var(--navy);padding:0 16px;height:46px;display:flex;align-items:center;justify-content:space-between}
+.b2b-brand{display:flex;align-items:center;gap:8px}
+.b2b-brand-name{font-size:14px;font-weight:700;color:#fff}
+.b2b-brand-tag{font-size:10px;color:var(--xblue);background:var(--blue);padding:2px 8px;border-radius:99px;margin-left:6px}
+.b2b-user{display:flex;align-items:center;gap:6px;cursor:pointer}
+.b2b-av{width:28px;height:28px;border-radius:50%;background:var(--lblue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--xblue)}
+.b2b-uname{font-size:11px;color:var(--xblue)}
+
+.b2b-layout{display:grid;grid-template-columns:160px 1fr;min-height:520px}
+.b2b-sidebar{border-right:1px solid var(--border);padding:12px 0;background:#FAFBFC}
+.b2b-co-card{padding:10px 12px;margin:0 8px 12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm)}
+.b2b-co-nm{font-size:12px;font-weight:700;color:#1a1a2e}
+.b2b-co-ruc{font-size:10px;color:var(--gray);margin-bottom:4px}
+.b2b-co-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;background:var(--lgreen);color:var(--gtext);padding:2px 7px;border-radius:4px}
+.b2b-nav-sec{font-size:9px;font-weight:700;color:var(--gray);letter-spacing:.06em;text-transform:uppercase;padding:0 12px;margin:8px 0 4px}
+.b2b-nav-item{display:flex;align-items:center;gap:7px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--gray);transition:all .15s;border-right:2px solid transparent}
+.b2b-nav-item:hover{background:#EEF0F3;color:#1a1a2e}
+.b2b-nav-item.act{background:#fff;color:var(--blue);font-weight:700;border-right:2px solid var(--lblue)}
+.b2b-nav-item i{font-size:15px}
+.b2b-nav-badge{margin-left:auto;background:#E6F1FB;color:var(--blue);font-size:9px;font-weight:700;padding:1px 6px;border-radius:99px}
+
+.b2b-main{padding:16px}
+.b2b-sec{display:none}
+.b2b-sec.on{display:block}
+.b2b-sec-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px}
+.b2b-sec-title{font-size:17px;font-weight:700;color:#1a1a2e}
+.b2b-sec-sub{font-size:12px;color:var(--gray);margin-top:2px}
+.b2b-new-btn{font-size:11px;padding:7px 12px;border:1.5px solid var(--lblue);border-radius:var(--radius-sm);background:#fff;color:var(--lblue);cursor:pointer;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .15s}
+.b2b-new-btn:hover{background:#E6F1FB}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.m-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.m-lbl{font-size:11px;color:var(--gray);margin-bottom:3px}
+.m-val{font-size:20px;font-weight:700;color:#1a1a2e}
+.m-note{font-size:10px;color:var(--gray);margin-top:2px}
+.m-note.up{color:var(--green)}
+.m-note.warn{color:#854F0B}
+
+.b2b-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.b2b-card-hd{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.b2b-card-title{font-size:13px;font-weight:700;color:#1a1a2e}
+.b2b-card-action{font-size:11px;color:var(--lblue);cursor:pointer}
+.b2b-card-body{padding:12px 14px}
+
+.reorder-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ro-card{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:10px;transition:border-color .15s}
+.ro-card:hover{border-color:var(--lblue)}
+.ro-icon{width:36px;height:36px;background:var(--lgray);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ro-icon i{font-size:18px;color:var(--lblue)}
+.ro-info{flex:1;min-width:0}
+.ro-nm{font-size:11px;font-weight:600;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ro-det{font-size:10px;color:var(--gray)}
+.ro-price{font-size:12px;font-weight:700;color:var(--blue);white-space:nowrap}
+.ro-add{font-size:10px;padding:4px 9px;background:var(--navy);color:#fff;border:none;border-radius:4px;cursor:pointer;margin-top:3px;display:block;transition:background .15s}
+.ro-add:hover{background:var(--blue)}
+
+.ord-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
+.ord-tbl th{font-size:10px;font-weight:600;color:var(--gray);text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);background:var(--lgray)}
+.ord-tbl td{font-size:11px;color:#1a1a2e;padding:8px 8px;border-bottom:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ord-tbl tr:last-child td{border-bottom:none}
+.s-pill{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px}
+.s-ent{background:var(--lgreen);color:var(--gtext)}
+.s-tra{background:#E6F1FB;color:var(--blue)}
+.ro-btn{font-size:10px;padding:3px 9px;border:1px solid var(--border);border-radius:4px;background:#fff;color:#1a1a2e;cursor:pointer;transition:all .15s}
+.ro-btn:hover{border-color:var(--lblue);color:var(--lblue)}
+
+/* COTIZADOR */
+.cot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cot-lbl{font-size:11px;font-weight:600;color:var(--gray);margin-bottom:5px;display:block}
+.cot-items{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.cot-row{display:grid;grid-template-columns:1fr 70px 56px 28px;align-items:center;border-bottom:1px solid var(--border)}
+.cot-row:last-child{border-bottom:none}
+.cot-row.hdr{background:var(--lgray)}
+.cot-cell{padding:7px 8px;font-size:11px;color:#1a1a2e}
+.cot-cell.h{font-size:10px;font-weight:600;color:var(--gray)}
+.cot-sel{width:100%;border:none;background:transparent;font-size:11px;color:#1a1a2e;font-family:var(--font)}
+.cot-num{width:100%;border:none;background:transparent;font-size:11px;color:#1a1a2e;font-family:var(--font)}
+.cot-add-row{padding:7px 9px;border-top:1px solid var(--border);background:#fff}
+.cot-add{font-size:11px;color:var(--lblue);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:600}
+.cot-del{background:none;border:none;cursor:pointer;color:var(--gray);font-size:15px;padding:2px;display:flex;align-items:center;transition:color .15s}
+.cot-del:hover{color:var(--red)}
+
+.cot-summary{background:var(--lgray);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)}
+.cot-sum-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.cot-sum-lbl{font-size:11px;color:var(--gray)}
+.cot-sum-val{font-size:12px;color:#1a1a2e;font-weight:600}
+.cot-disc{background:var(--lgreen);color:var(--gtext);font-size:9px;font-weight:700;padding:1px 6px;border-radius:99px;margin-left:5px}
+.cot-total-row{display:flex;justify-content:space-between;align-items:baseline;padding-top:9px;border-top:1px solid var(--bgray);margin-top:4px}
+.cot-total-lbl{font-size:13px;font-weight:700;color:#1a1a2e}
+.cot-total-val{font-size:20px;font-weight:700;color:var(--blue)}
+.cot-info{margin-top:9px;padding:7px 9px;background:#E6F1FB;border-radius:5px;font-size:10px;color:var(--blue)}
+.cot-actions{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.cot-btn-p{padding:10px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .15s}
+.cot-btn-p:hover{background:var(--blue)}
+.cot-btn-s{padding:8px;background:#fff;color:var(--blue);border:1.5px solid var(--lblue);border-radius:var(--radius-sm);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.cot-btn-s:hover{background:#E6F1FB}
+.cot-btn-wa{padding:8px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.doc-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);transition:border-color .15s;cursor:pointer}
+.doc-item:hover{border-color:var(--lblue)}
+.doc-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.di-red{background:var(--lred)}
+.di-red i{font-size:16px;color:var(--red)}
+.di-green{background:var(--lgreen)}
+.di-green i{font-size:16px;color:var(--green)}
+.doc-nm{font-size:11px;font-weight:600;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-dt{font-size:10px;color:var(--gray)}
+.doc-dl{font-size:15px;color:var(--lblue);margin-left:auto;flex-shrink:0}
+
+.users-list{display:flex;flex-direction:column;gap:7px}
+.u-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:var(--radius-sm)}
+.u-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.u-nm{font-size:12px;font-weight:600;color:#1a1a2e}
+.u-em{font-size:10px;color:var(--gray)}
+.u-role{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px}
+.role-adm{background:#E6F1FB;color:var(--blue)}
+.role-buy{background:var(--lgray);color:var(--gray)}
+.u-st{font-size:10px;display:flex;align-items:center;gap:3px;margin-left:auto}
+.u-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;opacity:0;transform:translateY(10px);transition:all .3s;z-index:999;pointer-events:none;display:flex;align-items:center;gap:7px}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ── DEMO FOOTER ── */
+.demo-footer{text-align:center;padding:20px;font-size:11px;color:var(--gray);background:var(--lgray);border-top:1px solid var(--border)}
+.demo-footer strong{color:var(--navy)}
+
+@media(max-width:640px){
+  .hero{grid-template-columns:1fr}
+  .hero-r{display:none}
+  .pdp-body{grid-template-columns:1fr}
+  .pdp-gallery{border-right:none;border-bottom:1px solid var(--border)}
+  .b2b-layout{grid-template-columns:1fr}
+  .b2b-sidebar{display:none}
+  .cat-grid,.prod-grid,.rev-grid{grid-template-columns:1fr 1fr}
+  .metrics{grid-template-columns:1fr 1fr}
+  .cot-grid{grid-template-columns:1fr}
+  .snav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <div class="logo-box">AAA</div>
+    <div>
+      <div class="brand-name">Reflomax</div>
+      <div class="brand-sub">reflectivosecuador.com</div>
+    </div>
+  </div>
+  <span class="demo-badge">DEMO — Prototipo E-Commerce</span>
+</header>
+
+<div class="view-nav" id="view-nav">
+  <button class="vnav-btn on" onclick="showView('home')">
+    <i class="ti ti-home"></i> Homepage
+  </button>
+  <button class="vnav-btn" onclick="showView('pdp')">
+    <i class="ti ti-package"></i> Ficha de producto
+  </button>
+  <button class="vnav-btn" onclick="showView('b2b')">
+    <i class="ti ti-building"></i> Portal B2B
+  </button>
+</div>
+
+<div class="screens">
+
+<!-- ══════════ HOMEPAGE ══════════ -->
+<div class="screen on" id="scr-home">
+<div class="mock">
+  <div class="topbar">
+    <span class="tb-txt"><i class="ti ti-truck"></i> Envíos a todo Ecuador 24–48h</span>
+    <span class="tb-dot">•</span>
+    <span class="tb-txt">Más de 50 variedades en stock permanente</span>
+    <span class="tb-dot">•</span>
+    <span class="tb-txt"><i class="ti ti-phone"></i> +593 99 417 4189</span>
+  </div>
+  <div class="snav">
+    <div class="snav-logo">
+      <div class="snav-logo-box">AAA</div>
+      <div><div class="snav-name">Reflomax</div><div class="snav-sub">Reflectivos Ecuador</div></div>
+    </div>
+    <div class="snav-links">
+      <a class="snav-link cur">Catálogo</a>
+      <a class="snav-link">Industrias</a>
+      <a class="snav-link">Certificaciones</a>
+      <a class="snav-link">Blog</a>
+    </div>
+    <div class="snav-actions">
+      <button class="snav-btn"><i class="ti ti-search"></i></button>
+      <button class="snav-btn"><i class="ti ti-shopping-cart"></i><span class="cart-badge" id="cart-count">2</span></button>
+      <button class="snav-btn pr" onclick="showView('b2b')">Portal B2B</button>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-l">
+      <div class="hero-badge"><i class="ti ti-certificate"></i> Certificados ANSI-ISEA 107 · EN 471</div>
+      <div class="hero-h1">Cintas reflectivas de<br><em>alta visibilidad</em><br>para Ecuador</div>
+      <div class="hero-p">Importadores directos de la marca Reflomax. Más de 50 variedades en stock permanente con entrega inmediata en Quito.</div>
+      <div class="hero-btns">
+        <button class="hbtn-p" onclick="showView('pdp')"><i class="ti ti-arrow-right"></i> Ver catálogo</button>
+        <button class="hbtn-s" onclick="showView('b2b')">Cotizar al por mayor</button>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="hero-prod" onclick="showView('pdp')"><i class="ti ti-stripe"></i><div class="hero-prod-name">Cinta textil AAA<br>Plata 3cm</div><div class="hero-prod-price">desde $0.42/m</div></div>
+      <div class="hero-prod" style="border-right:none"><i class="ti ti-topology-ring-2" style="color:#9FE1CB"></i><div class="hero-prod-name">Microprisma<br>Reflomax Pro</div><div class="hero-prod-price">desde $1.20/m</div></div>
+      <div class="hero-prod" style="border-bottom:none"><i class="ti ti-scissors" style="color:#F5C4B3"></i><div class="hero-prod-name">Tela reflectiva<br>impermeable</div><div class="hero-prod-price">desde $3.80/m</div></div>
+      <div class="hero-prod" style="border-right:none;border-bottom:none"><i class="ti ti-car" style="color:#C0DD97"></i><div class="hero-prod-name">Reflectivo<br>vehicular</div><div class="hero-prod-price">desde $2.10/m</div></div>
+    </div>
+  </div>
+  <div class="trust">
+    <div class="trust-item"><i class="ti ti-certificate"></i> ANSI-ISEA 107 certificado</div>
+    <div class="trust-item"><i class="ti ti-refresh"></i> 60 ciclos de lavado garantizados</div>
+    <div class="trust-item"><i class="ti ti-building-factory"></i> Importadores directos</div>
+    <div class="trust-item"><i class="ti ti-clock"></i> Entrega inmediata Quito</div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd"><span class="sec-title">Comprar por categoría</span><span class="sec-link">Ver todas <i class="ti ti-arrow-right"></i></span></div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="showView('pdp')"><div class="cat-img"><i class="ti ti-stripe"></i></div><div class="cat-info"><div class="cat-nm">Cinta reflectiva textil</div><div class="cat-ct">18 variantes · desde $0.42/m</div></div></div>
+      <div class="cat-card"><div class="cat-img"><i class="ti ti-topology-ring-2"></i></div><div class="cat-info"><div class="cat-nm">Microprisma Reflomax</div><div class="cat-ct">8 variantes · desde $1.20/m</div></div></div>
+      <div class="cat-card"><div class="cat-img"><i class="ti ti-scissors"></i></div><div class="cat-info"><div class="cat-nm">Tela reflectiva</div><div class="cat-ct">6 variantes · desde $3.80/m</div></div></div>
+      <div class="cat-card"><div class="cat-img"><i class="ti ti-car"></i></div><div class="cat-info"><div class="cat-nm">Reflectivo vehicular</div><div class="cat-ct">12 variantes · desde $2.10/m</div></div></div>
+      <div class="cat-card"><div class="cat-img"><i class="ti ti-thread"></i></div><div class="cat-info"><div class="cat-nm">Hilo reflectivo</div><div class="cat-ct">4 variantes · desde $0.28/m</div></div></div>
+      <div class="cat-card"><div class="cat-img"><i class="ti ti-color-swatch"></i></div><div class="cat-info"><div class="cat-nm">Bicolor fluorescente</div><div class="cat-ct">7 variantes · desde $0.65/m</div></div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd"><span class="sec-title">Productos más vendidos</span><span class="sec-link">Ver catálogo <i class="ti ti-arrow-right"></i></span></div>
+    <div class="prod-grid">
+      <div class="prod-card" onclick="showView('pdp')">
+        <div class="prod-img"><i class="ti ti-stripe"></i><span class="pbadge pb-blue">Más vendido</span></div>
+        <div class="prod-body">
+          <div class="prod-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><span>(42)</span></div>
+          <div class="prod-nm">Cinta AAA Plata 5cm</div>
+          <div class="prod-spec">ANSI-ISEA 107 · 60 ciclos lavado</div>
+          <div class="prod-foot"><div><div class="prod-price">$0.58/m</div><div class="prod-price-sub">$52/rollo 90m</div></div><button class="prod-cta" onclick="addCart(event)">+ Carrito</button></div>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-img"><i class="ti ti-topology-ring-2"></i><span class="pbadge pb-green">Certificado EN</span></div>
+        <div class="prod-body">
+          <div class="prod-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><span>(28)</span></div>
+          <div class="prod-nm">Microprisma Reflomax 3cm</div>
+          <div class="prod-spec">633 cd/lux · Máx. visibilidad</div>
+          <div class="prod-foot"><div><div class="prod-price">$1.20/m</div><div class="prod-price-sub">$108/rollo 90m</div></div><button class="prod-cta" onclick="addCart(event)">+ Carrito</button></div>
+        </div>
+      </div>
+      <div class="prod-card">
+        <div class="prod-img"><i class="ti ti-color-swatch"></i><span class="pbadge pb-amber">Bicolor</span></div>
+        <div class="prod-body">
+          <div class="prod-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star" style="color:var(--bgray)"></i><span>(19)</span></div>
+          <div class="prod-nm">Cinta bicolor AAA 5cm</div>
+          <div class="prod-spec">Fluorescente día · reflectivo noche</div>
+          <div class="prod-foot"><div><div class="prod-price">$0.65/m</div><div class="prod-price-sub">$58/rollo 90m</div></div><button class="prod-cta" onclick="addCart(event)">+ Carrito</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="b2b-strip">
+    <div class="b2b-l">
+      <div class="b2b-ey">PORTAL MAYORISTAS</div>
+      <div class="b2b-title">Precios especiales para distribuidores y fabricantes</div>
+      <div class="b2b-sub">Accede a precios por volumen, fichas técnicas y cotización en 24h. Más de 200 empresas ya confían en Reflomax.</div>
+      <div class="b2b-stats">
+        <div><div class="b2b-stat-n">+200</div><div class="b2b-stat-l">clientes B2B</div></div>
+        <div><div class="b2b-stat-n">50+</div><div class="b2b-stat-l">variedades</div></div>
+        <div><div class="b2b-stat-n">24h</div><div class="b2b-stat-l">entrega Quito</div></div>
+      </div>
+    </div>
+    <button class="b2b-cta" onclick="showView('b2b')">Acceder al portal B2B <i class="ti ti-arrow-right"></i></button>
+  </div>
+  <div class="sec">
+    <div class="sec-hd"><span class="sec-title">Por industria</span></div>
+    <div class="ind-grid">
+      <div class="ind-card"><i class="ti ti-building-factory-2"></i><div class="ind-nm">Construcción</div><div class="ind-desc">Obra, EPP</div></div>
+      <div class="ind-card"><i class="ti ti-road"></i><div class="ind-nm">Vialidad</div><div class="ind-desc">Señalética</div></div>
+      <div class="ind-card"><i class="ti ti-helmet"></i><div class="ind-nm">Minería</div><div class="ind-desc">Alta visibilidad</div></div>
+      <div class="ind-card"><i class="ti ti-bike"></i><div class="ind-nm">Deportes</div><div class="ind-desc">Ciclismo, running</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec" style="padding-top:0">
+    <div class="sec-hd"><span class="sec-title">Lo que dicen nuestros clientes</span></div>
+    <div class="rev-grid">
+      <div class="rev-card"><div class="rev-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-txt">"El número uno del mercado nacional. Llevamos 5 años trabajando juntos."</div><div class="rev-auth"><div class="rev-av" style="background:#B5D4F4;color:#042C53">ML</div><div><div class="rev-nm">Miguel Lechón</div><div class="rev-co">Protecziona · Quito</div></div></div></div>
+      <div class="rev-card"><div class="rev-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-txt">"Las certificaciones ANSI nos permiten ganar licitaciones institucionales."</div><div class="rev-auth"><div class="rev-av" style="background:#C0DD97;color:#173404">DT</div><div><div class="rev-nm">Daniela Tacán</div><div class="rev-co">EMBERS · Quito</div></div></div></div>
+      <div class="rev-card"><div class="rev-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-txt">"Calidad y atención inmediata. Seguimos eligiendo AAA Reflomax año tras año."</div><div class="rev-auth"><div class="rev-av" style="background:#F5C4B3;color:#4A1B0C">ES</div><div><div class="rev-nm">Elvia Saritama</div><div class="rev-co">Almacenes Puebla</div></div></div></div>
+    </div>
+  </div>
+  <div class="cert-strip">
+    <div class="cert-chip"><i class="ti ti-check" style="color:var(--green)"></i><span class="cert-chip-lbl">ANSI/ISEA 107-2020</span></div>
+    <div class="cert-chip"><i class="ti ti-check" style="color:var(--green)"></i><span class="cert-chip-lbl">EN 471 Nivel 2</span></div>
+    <div class="cert-chip"><i class="ti ti-check" style="color:var(--green)"></i><span class="cert-chip-lbl">633 cd/lux</span></div>
+    <div class="cert-dl"><i class="ti ti-download" style="color:var(--blue)"></i><span class="cert-dl-lbl">Descargar certificados PDF</span></div>
+  </div>
+  <div class="home-footer">
+    <span class="hf-brand">AAA Reflomax · Reflectivos Ecuador</span>
+    <div class="hf-links"><a class="hf-link">Envíos</a><a class="hf-link">Devoluciones</a><a class="hf-link">Términos</a></div>
+    <button class="wa-btn"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ PDP ══════════ -->
+<div class="screen" id="scr-pdp">
+<div class="mock">
+  <div class="topbar">
+    <span class="tb-txt"><i class="ti ti-truck"></i> Envíos a todo Ecuador 24–48h</span>
+    <span class="tb-dot">•</span>
+    <span class="tb-txt">+593 99 417 4189</span>
+  </div>
+  <div class="snav">
+    <div class="snav-logo"><div class="snav-logo-box">AAA</div><div><div class="snav-name">Reflomax</div><div class="snav-sub">Reflectivos Ecuador</div></div></div>
+    <div class="snav-links"><a class="snav-link" onclick="showView('home')">Catálogo</a><a class="snav-link">Industrias</a><a class="snav-link">Certificaciones</a><a class="snav-link">Blog</a></div>
+    <div class="snav-actions">
+      <button class="snav-btn"><i class="ti ti-search"></i></button>
+      <button class="snav-btn"><i class="ti ti-shopping-cart"></i><span class="cart-badge" id="cart-count2">2</span></button>
+      <button class="snav-btn pr" onclick="showView('b2b')">Portal B2B</button>
+    </div>
+  </div>
+  <div class="bc-bar">
+    <a class="bc-link" onclick="showView('home')">Inicio</a><span class="bc-sep">/</span>
+    <span class="bc">Catálogo</span><span class="bc-sep">/</span>
+    <span class="bc">Cinta textil</span><span class="bc-sep">/</span>
+    <span class="bc-cur">Cinta AAA Plata 5cm</span>
+  </div>
+  <div class="pdp-body">
+    <div class="pdp-gallery">
+      <div class="main-img"><i class="ti ti-stripe"></i><span class="cert-badge-img"><i class="ti ti-check"></i> ANSI-ISEA</span></div>
+      <div class="thumb-row">
+        <div><div class="thumb act"><i class="ti ti-stripe"></i></div><div style="font-size:8px;color:var(--gray);text-align:center;margin-top:2px">Principal</div></div>
+        <div><div class="thumb"><i class="ti ti-hard-hat"></i></div><div style="font-size:8px;color:var(--gray);text-align:center;margin-top:2px">En uso</div></div>
+        <div><div class="thumb"><i class="ti ti-moon"></i></div><div style="font-size:8px;color:var(--gray);text-align:center;margin-top:2px">Noche</div></div>
+        <div><div class="thumb"><i class="ti ti-file-text"></i></div><div style="font-size:8px;color:var(--gray);text-align:center;margin-top:2px">Cert.</div></div>
+      </div>
+    </div>
+    <div class="pdp-buy">
+      <div><div class="pdp-cat">Cinta reflectiva textil</div><div class="pdp-title">Cinta AAA Plata 5cm</div><div class="pdp-sku">SKU: AAA-TX-5CM-PL · Clase ANSI 2</div></div>
+      <div>
+        <div class="pdp-stars-row"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><span class="pdp-rating">4.9 (42 reseñas)</span></div>
+        <span class="stock-pill" style="margin-top:6px;display:inline-flex"><span class="stock-dot"></span>En stock · Entrega Quito 24h</span>
+      </div>
+      <div class="price-block">
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px"><span class="price-main" id="p-price">$0.58</span><span class="price-u">/ metro</span></div>
+        <div class="price-rollo">Rollo 90m: <strong>$52.20</strong></div>
+        <table class="vol-tbl" style="margin-top:8px">
+          <tr><th>Cantidad</th><th>Precio/m</th><th>Descuento</th></tr>
+          <tr><td>1–49 m</td><td>$0.58</td><td>—</td></tr>
+          <tr><td>50–179 m</td><td>$0.52</td><td>–10%</td></tr>
+          <tr><td>180–449 m</td><td>$0.47</td><td>–19% <span class="vol-best">Popular</span></td></tr>
+          <tr><td>450m+</td><td>$0.42</td><td>–28%</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--gray);margin-bottom:6px">Unidad de compra</div>
+        <div class="unit-toggle">
+          <button class="unit-btn on" onclick="setUnit('metro',this)">Por metro</button>
+          <button class="unit-btn" onclick="setUnit('rollo',this)">Por rollo (90m)</button>
+        </div>
+      </div>
+      <div class="qty-row">
+        <span class="qty-lbl">Cantidad:</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="chgQ(-1)">−</button>
+          <div class="qty-val" id="p-qty">10</div>
+          <button class="qty-btn" onclick="chgQ(1)">+</button>
+        </div>
+        <span class="qty-total">Total: <span id="p-total">$5.80</span></span>
+      </div>
+      <button class="cta-add" onclick="addCartPDP()"><i class="ti ti-shopping-cart"></i> Agregar al carrito</button>
+      <button class="cta-quote" onclick="showView('b2b')"><i class="ti ti-file-invoice"></i> Solicitar cotización mayorista</button>
+      <button class="cta-wa-btn"><i class="ti ti-brand-whatsapp"></i> Consultar por WhatsApp</button>
+      <div class="pdp-del">
+        <div class="pdp-del-row"><i class="ti ti-truck"></i> Quito 24h · resto del país 48–72h</div>
+        <div class="pdp-del-row"><i class="ti ti-rotate-clockwise"></i> Devolución en 15 días si no cumple norma</div>
+        <div class="pdp-del-row"><i class="ti ti-lock"></i> Pago seguro: tarjeta, transferencia, contraentrega</div>
+      </div>
+    </div>
+  </div>
+  <div class="specs-sec">
+    <div class="specs-title">Especificaciones técnicas</div>
+    <div class="specs-kpi">
+      <div class="kpi"><div class="kpi-val">633</div><div class="kpi-lbl">cd/lux · reflectividad</div></div>
+      <div class="kpi"><div class="kpi-val">60</div><div class="kpi-lbl">ciclos de lavado</div></div>
+      <div class="kpi"><div class="kpi-val">5 cm</div><div class="kpi-lbl">ancho estándar</div></div>
+    </div>
+    <table class="spec-tbl">
+      <tr><td>Norma</td><td>ANSI/ISEA 107-2020 · Clase 2</td></tr>
+      <tr><td>Tecnología</td><td>Glass bead retroreflectivo</td></tr>
+      <tr><td>Material base</td><td>Poliéster 100% tejido</td></tr>
+      <tr><td>Anchos disponibles</td><td>2.5 · 3 · 5 · 7.5 cm</td></tr>
+      <tr><td>Colores</td><td>Plata · Amarillo fluorescente · Naranja</td></tr>
+      <tr><td>Temperatura de aplicación</td><td>–20 °C a +90 °C</td></tr>
+      <tr><td>Método de unión</td><td>Costura, termofijado o adhesivo</td></tr>
+    </table>
+    <div class="cert-row-pdp">
+      <div class="cert-chip"><i class="ti ti-check" style="color:var(--green)"></i><span class="cert-chip-lbl">ANSI/ISEA 107-2020</span></div>
+      <div class="cert-chip"><i class="ti ti-check" style="color:var(--green)"></i><span class="cert-chip-lbl">EN 471 Nivel 2</span></div>
+      <div class="cert-dl"><i class="ti ti-download" style="color:var(--blue)"></i><span class="cert-dl-lbl">Descargar ficha técnica PDF</span></div>
+    </div>
+  </div>
+  <div class="apps-sec">
+    <div class="specs-title">Aplicaciones principales</div>
+    <div class="apps-grid">
+      <div class="app-chip"><i class="ti ti-building-factory-2"></i><div class="app-nm">Construcción</div><div class="app-d">Chalecos, overoles</div></div>
+      <div class="app-chip"><i class="ti ti-road"></i><div class="app-nm">Vialidad</div><div class="app-d">Agentes de tránsito</div></div>
+      <div class="app-chip"><i class="ti ti-helmet"></i><div class="app-nm">Minería</div><div class="app-d">EPP subterráneo</div></div>
+      <div class="app-chip"><i class="ti ti-bike"></i><div class="app-nm">Deportes</div><div class="app-d">Ciclismo, running</div></div>
+    </div>
+  </div>
+  <div class="rev-sec">
+    <div class="specs-title">Reseñas del producto</div>
+    <div class="rev-sum">
+      <div style="text-align:center"><div class="rev-score-n">4.9</div><div class="rev-score-stars"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-ct">42 reseñas</div></div>
+      <div class="rev-bars">
+        <div class="rev-bar-row"><span class="rev-bar-lbl">5</span><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:88%"></div></div><span class="rev-bar-ct">37</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-lbl">4</span><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:9%"></div></div><span class="rev-bar-ct">4</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-lbl">3</span><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:2%"></div></div><span class="rev-bar-ct">1</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-lbl">2</span><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:0%"></div></div><span class="rev-bar-ct">0</span></div>
+        <div class="rev-bar-row"><span class="rev-bar-lbl">1</span><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:0%"></div></div><span class="rev-bar-ct">0</span></div>
+      </div>
+    </div>
+    <div class="rev-list">
+      <div class="rev-item"><div class="rev-hd"><div class="rev-auth-row"><div class="rev-av2" style="background:#B5D4F4;color:#042C53">ML</div><div><div class="rev-nm2">Miguel Lechón</div><div class="rev-co2">Protecziona · Quito</div></div></div><span class="rev-date">Hace 2 semanas</span></div><div class="rev-stars2"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-txt2">"Llevamos 5 años usando este producto. La reflectividad se mantiene incluso después de lavados industriales. Es el número uno sin discusión."</div><div class="ver-badge"><i class="ti ti-check"></i> Compra verificada · 40 rollos</div></div>
+      <div class="rev-item"><div class="rev-hd"><div class="rev-auth-row"><div class="rev-av2" style="background:#C0DD97;color:#173404">DT</div><div><div class="rev-nm2">Daniela Tacán</div><div class="rev-co2">EMBERS fabricantes</div></div></div><span class="rev-date">Hace 1 mes</span></div><div class="rev-stars2"><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i><i class="ti ti-star"></i></div><div class="rev-txt2">"Las certificaciones ANSI nos permiten presentar a licitaciones institucionales sin ningún problema."</div><div class="ver-badge"><i class="ti ti-check"></i> Compra verificada · 12 rollos</div></div>
+    </div>
+  </div>
+  <div class="related-sec">
+    <div class="specs-title" style="margin-bottom:12px">También te puede interesar</div>
+    <div class="rel-grid">
+      <div class="rel-card"><div class="rel-img"><i class="ti ti-topology-ring-2"></i></div><div class="rel-body"><div class="rel-nm">Microprisma Reflomax 5cm</div><div class="rel-price">desde $1.20/m</div></div></div>
+      <div class="rel-card"><div class="rel-img"><i class="ti ti-color-swatch"></i></div><div class="rel-body"><div class="rel-nm">Cinta bicolor AAA 5cm</div><div class="rel-price">desde $0.65/m</div></div></div>
+      <div class="rel-card"><div class="rel-img"><i class="ti ti-stripe"></i></div><div class="rel-body"><div class="rel-nm">Cinta AAA Plata 3cm</div><div class="rel-price">desde $0.42/m</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ B2B PORTAL ══════════ -->
+<div class="screen" id="scr-b2b">
+<div class="mock">
+  <div class="b2b-topbar">
+    <div class="b2b-brand">
+      <div class="snav-logo-box" style="width:26px;height:26px;font-size:9px">AAA</div>
+      <span class="b2b-brand-name">Reflomax</span>
+      <span class="b2b-brand-tag">Portal B2B</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <i class="ti ti-bell" style="font-size:16px;color:var(--xblue);cursor:pointer"></i>
+      <div class="b2b-user"><div class="b2b-av">DT</div><span class="b2b-uname">Daniela Tacán</span><i class="ti ti-chevron-down" style="font-size:11px;color:var(--xblue)"></i></div>
+    </div>
+  </div>
+  <div class="b2b-layout">
+    <div class="b2b-sidebar">
+      <div class="b2b-co-card"><div class="b2b-co-nm">EMBERS Fabricantes</div><div class="b2b-co-ruc">RUC 1792345678001</div><span class="b2b-co-badge"><i class="ti ti-check" style="font-size:9px"></i> Distribuidor verificado</span></div>
+      <div class="b2b-nav-sec">Principal</div>
+      <div class="b2b-nav-item act" id="bnav-dashboard" onclick="showB2B('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="b2b-nav-item" id="bnav-cotizador" onclick="showB2B('cotizador')"><i class="ti ti-file-invoice"></i> Cotizador<span class="b2b-nav-badge">Nuevo</span></div>
+      <div class="b2b-nav-item" id="bnav-pedidos" onclick="showB2B('pedidos')"><i class="ti ti-package"></i> Pedidos<span class="b2b-nav-badge">3</span></div>
+      <div class="b2b-nav-item" id="bnav-docs" onclick="showB2B('docs')"><i class="ti ti-files"></i> Documentos</div>
+      <div class="b2b-nav-sec">Cuenta</div>
+      <div class="b2b-nav-item" id="bnav-usuarios" onclick="showB2B('usuarios')"><i class="ti ti-users"></i> Usuarios</div>
+      <div class="b2b-nav-item"><i class="ti ti-settings"></i> Configuración</div>
+    </div>
+    <div class="b2b-main">
+      <div class="b2b-sec on" id="b2b-dashboard">
+        <div class="b2b-sec-hd"><div><div class="b2b-sec-title">Bienvenida, Daniela</div><div class="b2b-sec-sub">EMBERS Fabricantes · Distribuidora verificada desde 2021</div></div><button class="b2b-new-btn" onclick="showB2B('cotizador')"><i class="ti ti-plus"></i> Nueva cotización</button></div>
+        <div class="metrics">
+          <div class="m-card"><div class="m-lbl">Compras este mes</div><div class="m-val">$4,280</div><div class="m-note up"><i class="ti ti-trending-up"></i> +18% vs anterior</div></div>
+          <div class="m-card"><div class="m-lbl">Pedidos activos</div><div class="m-val">3</div><div class="m-note">2 tránsito · 1 proceso</div></div>
+          <div class="m-card"><div class="m-lbl">Tu descuento</div><div class="m-val">–19%</div><div class="m-note up">Distribuidor Plata</div></div>
+          <div class="m-card"><div class="m-lbl">Próxima entrega</div><div class="m-val">Hoy</div><div class="m-note warn"><i class="ti ti-clock"></i> #1089 · 14:00h</div></div>
+        </div>
+        <div class="b2b-card"><div class="b2b-card-hd"><span class="b2b-card-title">Recompra rápida</span><span class="b2b-card-action" onclick="showB2B('cotizador')">Ver catálogo <i class="ti ti-arrow-right"></i></span></div>
+          <div class="b2b-card-body"><div class="reorder-grid">
+            <div class="ro-card"><div class="ro-icon"><i class="ti ti-stripe"></i></div><div class="ro-info"><div class="ro-nm">Cinta AAA Plata 5cm</div><div class="ro-det">Último: 20 rollos · 3 sem.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span class="ro-price">$0.47/m</span><button class="ro-add">+ Pedir</button></div></div>
+            <div class="ro-card"><div class="ro-icon"><i class="ti ti-topology-ring-2"></i></div><div class="ro-info"><div class="ro-nm">Microprisma 3cm plata</div><div class="ro-det">Último: 8 rollos · 5 sem.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span class="ro-price">$0.97/m</span><button class="ro-add">+ Pedir</button></div></div>
+            <div class="ro-card"><div class="ro-icon"><i class="ti ti-color-swatch"></i></div><div class="ro-info"><div class="ro-nm">Cinta bicolor 5cm</div><div class="ro-det">Último: 12 rollos · 6 sem.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span class="ro-price">$0.53/m</span><button class="ro-add">+ Pedir</button></div></div>
+            <div class="ro-card"><div class="ro-icon"><i class="ti ti-scissors"></i></div><div class="ro-info"><div class="ro-nm">Tela reflectiva</div><div class="ro-det">Último: 5 rollos · 2 mes.</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span class="ro-price">$3.08/m</span><button class="ro-add">+ Pedir</button></div></div>
+          </div></div>
+        </div>
+        <div class="b2b-card"><div class="b2b-card-hd"><span class="b2b-card-title">Pedidos recientes</span><span class="b2b-card-action" onclick="showB2B('pedidos')">Ver todos <i class="ti ti-arrow-right"></i></span></div>
+          <div class="b2b-card-body" style="padding:0"><table class="ord-tbl">
+            <tr><th style="width:60px">Pedido</th><th>Productos</th><th style="width:60px">Total</th><th style="width:90px">Estado</th><th style="width:70px"></th></tr>
+            <tr><td style="font-weight:700">#1089</td><td>Cinta AAA 5cm × 20 rollos</td><td>$940</td><td><span class="s-pill s-tra"><i class="ti ti-truck" style="font-size:9px"></i> Tránsito</span></td><td><button class="ro-btn">Rastrear</button></td></tr>
+            <tr><td style="font-weight:700">#1081</td><td>Microprisma + Bicolor</td><td>$1,240</td><td><span class="s-pill s-ent"><i class="ti ti-check" style="font-size:9px"></i> Entregado</span></td><td><button class="ro-btn">Reordenar</button></td></tr>
+            <tr><td style="font-weight:700">#1074</td><td>Tela reflectiva × 5 rollos</td><td>$620</td><td><span class="s-pill s-ent"><i class="ti ti-check" style="font-size:9px"></i> Entregado</span></td><td><button class="ro-btn">Reordenar</button></td></tr>
+          </table></div>
+        </div>
+      </div>
+      <div class="b2b-sec" id="b2b-cotizador">
+        <div class="b2b-sec-hd"><div><div class="b2b-sec-title">Cotizador B2B</div><div class="b2b-sec-sub">Descuento Distribuidor Plata (–19%) aplicado automáticamente</div></div></div>
+        <div class="cot-grid">
+          <div>
+            <label class="cot-lbl">Productos a cotizar</label>
+            <div class="cot-items">
+              <div class="cot-row hdr"><div class="cot-cell h">Producto</div><div class="cot-cell h">Metros</div><div class="cot-cell h">$/m</div><div class="cot-cell h"></div></div>
+              <div class="cot-row" id="cr-0"><div class="cot-cell"><select class="cot-sel" onchange="calcCot()"><option value="0.47">Cinta AAA Plata 5cm</option><option value="0.34">Cinta AAA Plata 3cm</option><option value="0.97">Microprisma 3cm</option><option value="0.53">Bicolor 5cm</option><option value="3.08">Tela reflectiva</option></select></div><div class="cot-cell"><input type="number" class="cot-num" value="180" min="1" onchange="calcCot()" id="cq-0"></div><div class="cot-cell" id="cp-0" style="color:var(--blue);font-weight:700">$0.47</div><div class="cot-cell"><button class="cot-del" onclick="delRow(0)"><i class="ti ti-x"></i></button></div></div>
+              <div class="cot-row" id="cr-1"><div class="cot-cell"><select class="cot-sel" onchange="calcCot()"><option value="0.47">Cinta AAA Plata 5cm</option><option value="0.34">Cinta AAA Plata 3cm</option><option value="0.97" selected>Microprisma 3cm</option><option value="0.53">Bicolor 5cm</option><option value="3.08">Tela reflectiva</option></select></div><div class="cot-cell"><input type="number" class="cot-num" value="90" min="1" onchange="calcCot()" id="cq-1"></div><div class="cot-cell" id="cp-1" style="color:var(--blue);font-weight:700">$0.97</div><div class="cot-cell"><button class="cot-del" onclick="delRow(1)"><i class="ti ti-x"></i></button></div></div>
+              <div class="cot-add-row"><button class="cot-add"><i class="ti ti-plus"></i> Agregar producto</button></div>
+            </div>
+            <div style="margin-top:10px"><label class="cot-lbl">Uso o aplicación (opcional)</label><input type="text" placeholder="Ej: chalecos para obra, 200 unidades" style="width:100%;font-size:11px;padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font)"></div>
+          </div>
+          <div>
+            <div class="cot-summary">
+              <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px">Resumen de cotización</div>
+              <div class="cot-sum-row"><span class="cot-sum-lbl">Precio lista</span><span class="cot-sum-val" id="c-lista">$171.90</span></div>
+              <div class="cot-sum-row"><span class="cot-sum-lbl">Desc. Plata<span class="cot-disc">–19%</span></span><span class="cot-sum-val" style="color:var(--green)" id="c-ahorro">–$32.66</span></div>
+              <div class="cot-sum-row"><span class="cot-sum-lbl">Subtotal</span><span class="cot-sum-val" id="c-sub">$139.24</span></div>
+              <div class="cot-sum-row"><span class="cot-sum-lbl">IVA 15%</span><span class="cot-sum-val" id="c-iva">$20.89</span></div>
+              <div class="cot-total-row"><span class="cot-total-lbl">Total estimado</span><span class="cot-total-val" id="c-total">$160.13</span></div>
+              <div class="cot-info"><i class="ti ti-info-circle"></i> Válido 15 días · Entrega Quito 24h · Pago contra entrega disponible</div>
+            </div>
+            <div class="cot-actions">
+              <button class="cot-btn-p"><i class="ti ti-send"></i> Enviar solicitud de cotización</button>
+              <button class="cot-btn-s"><i class="ti ti-download"></i> Descargar PDF de cotización</button>
+              <button class="cot-btn-wa"><i class="ti ti-brand-whatsapp"></i> Confirmar por WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="b2b-sec" id="b2b-pedidos">
+        <div class="b2b-sec-hd"><div><div class="b2b-sec-title">Mis pedidos</div><div class="b2b-sec-sub">Historial completo · EMBERS Fabricantes</div></div></div>
+        <div class="b2b-card"><div class="b2b-card-body" style="padding:0"><table class="ord-tbl">
+          <tr><th style="width:60px">Pedido</th><th>Descripción</th><th style="width:60px">Total</th><th style="width:90px">Estado</th><th style="width:64px">Fecha</th><th style="width:70px"></th></tr>
+          <tr><td style="font-weight:700">#1089</td><td>Cinta AAA 5cm × 20 rollos</td><td>$940</td><td><span class="s-pill s-tra"><i class="ti ti-truck" style="font-size:9px"></i> Tránsito</span></td><td>08 May</td><td><button class="ro-btn">Rastrear</button></td></tr>
+          <tr><td style="font-weight:700">#1081</td><td>Microprisma + Bicolor</td><td>$1,240</td><td><span class="s-pill s-ent"><i class="ti ti-check" style="font-size:9px"></i> Entregado</span></td><td>21 Abr</td><td><button class="ro-btn">Reordenar</button></td></tr>
+          <tr><td style="font-weight:700">#1074</td><td>Tela reflectiva × 5 rollos</td><td>$620</td><td><span class="s-pill s-ent"><i class="ti ti-check" style="font-size:9px"></i> Entregado</span></td><td>03 Abr</td><td><button class="ro-btn">Reordenar</button></td></tr>
+          <tr><td style="font-weight:700">#1065</td><td>Cinta Plata 3cm × 10 rollos</td><td>$306</td><td><span class="s-pill s-ent"><i class="ti ti-check" style="font-size:9px"></i> Entregado</span></td><td>15 Mar</td><td><button class="ro-btn">Reordenar</button></td></tr>
+        </table></div></div>
+      </div>
+      <div class="b2b-sec" id="b2b-docs">
+        <div class="b2b-sec-hd"><div><div class="b2b-sec-title">Documentos</div><div class="b2b-sec-sub">Cotizaciones, facturas y fichas técnicas</div></div></div>
+        <div class="b2b-card"><div class="b2b-card-hd"><span class="b2b-card-title">Cotizaciones activas</span></div><div class="b2b-card-body"><div class="doc-grid"><div class="doc-item"><div class="doc-icon di-red"><i class="ti ti-file-text"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Cotización #COT-0047</div><div class="doc-dt">Válida hasta 22 May · $1,380</div></div><i class="ti ti-download doc-dl"></i></div><div class="doc-item"><div class="doc-icon di-red"><i class="ti ti-file-text"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Cotización #COT-0041</div><div class="doc-dt">Válida hasta 08 May · $720</div></div><i class="ti ti-download doc-dl"></i></div></div></div></div>
+        <div class="b2b-card"><div class="b2b-card-hd"><span class="b2b-card-title">Certificaciones y fichas técnicas</span></div><div class="b2b-card-body"><div class="doc-grid"><div class="doc-item"><div class="doc-icon di-red"><i class="ti ti-certificate"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Cert. ANSI/ISEA 107-2020</div><div class="doc-dt">Válido hasta Dic 2026</div></div><i class="ti ti-download doc-dl"></i></div><div class="doc-item"><div class="doc-icon di-green"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Lista de precios B2B 2026</div><div class="doc-dt">Act. 01 Ene 2026</div></div><i class="ti ti-download doc-dl"></i></div><div class="doc-item"><div class="doc-icon di-red"><i class="ti ti-file-description"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Ficha técnica cinta textil</div><div class="doc-dt">AAA-TX-5CM-PL · v2.1</div></div><i class="ti ti-download doc-dl"></i></div><div class="doc-item"><div class="doc-icon di-red"><i class="ti ti-file-description"></i></div><div style="flex:1;min-width:0"><div class="doc-nm">Ficha técnica microprisma</div><div class="doc-dt">AAA-MP-3CM-PL · v1.8</div></div><i class="ti ti-download doc-dl"></i></div></div></div></div>
+      </div>
+      <div class="b2b-sec" id="b2b-usuarios">
+        <div class="b2b-sec-hd"><div><div class="b2b-sec-title">Gestión de usuarios</div><div class="b2b-sec-sub">EMBERS Fabricantes · 3 activos</div></div><button class="b2b-new-btn"><i class="ti ti-user-plus"></i> Invitar</button></div>
+        <div class="b2b-card"><div class="b2b-card-body"><div class="users-list">
+          <div class="u-row"><div class="u-av" style="background:#B5D4F4;color:#042C53">DT</div><div><div class="u-nm">Daniela Tacán</div><div class="u-em">d.tacan@embers.ec</div></div><span class="u-role role-adm">Administrador</span><div class="u-st" style="color:var(--green)"><span class="u-dot"></span>Activo</div></div>
+          <div class="u-row"><div class="u-av" style="background:#C0DD97;color:#173404">JR</div><div><div class="u-nm">Juan Rosero</div><div class="u-em">j.rosero@embers.ec</div></div><span class="u-role role-buy">Comprador</span><div class="u-st" style="color:var(--gray)">Hace 2 días</div></div>
+          <div class="u-row"><div class="u-av" style="background:#F5C4B3;color:#4A1B0C">MP</div><div><div class="u-nm">María Paredes</div><div class="u-em">m.paredes@embers.ec</div></div><span class="u-role role-buy">Comprador</span><div class="u-st" style="color:var(--gray)">Hace 1 semana</div></div>
+        </div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /screens -->
+
+<div class="demo-footer">
+  <strong>AAA Reflomax</strong> — Prototipo de e-commerce interactivo · reflectivosecuador.com<br>
+  <span style="color:var(--bgray)">Este es un demo de diseño. Las funciones de compra no están activas.</span>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Producto agregado al carrito</span></div>
+
+<script>
+function showView(v){
+  ['home','pdp','b2b'].forEach(id=>{document.getElementById('scr-'+id).classList.remove('on')});
+  document.querySelectorAll('.vnav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('scr-'+v).classList.add('on');
+  const idx={home:0,pdp:1,b2b:2}[v];
+  document.querySelectorAll('.vnav-btn')[idx].classList.add('on');
+  document.getElementById('view-nav').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+let cartN=2;
+function addCart(e){e.stopPropagation();cartN++;document.getElementById('cart-count').textContent=cartN;showToast('Producto agregado al carrito');}
+function addCartPDP(){cartN++;document.getElementById('cart-count').textContent=cartN;document.getElementById('cart-count2').textContent=cartN;showToast('Cinta AAA Plata 5cm agregada al carrito');}
+
+let pQty=10,pUnit='metro';
+function chgQ(d){pQty=Math.max(1,pQty+d);updatePDP();}
+function setUnit(u,btn){pUnit=u;pQty=u==='rollo'?1:10;document.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');updatePDP();}
+function getUP(){if(pUnit==='rollo')return 52.20;if(pQty>=450)return 0.42;if(pQty>=180)return 0.47;if(pQty>=50)return 0.52;return 0.58;}
+function updatePDP(){
+  const p=getUP(),total=pUnit==='rollo'?52.20*pQty:p*pQty;
+  const lbl=pUnit==='rollo'?(pQty===1?'rollo':'rollos'):'m';
+  document.getElementById('p-price').textContent='$'+p.toFixed(2);
+  document.getElementById('p-qty').textContent=pQty;
+  document.getElementById('p-total').textContent='$'+total.toFixed(2)+' ('+pQty+' '+lbl+')';
+}
+
+function calcCot(){
+  let lista=0;
+  for(let i=0;i<=4;i++){
+    const row=document.getElementById('cr-'+i);
+    if(!row||row.style.display==='none')continue;
+    const sel=row.querySelector('select'),qty=document.getElementById('cq-'+i),cp=document.getElementById('cp-'+i);
+    if(!sel||!qty)continue;
+    const p=parseFloat(sel.value),q=parseInt(qty.value)||0;
+    if(cp)cp.textContent='$'+p.toFixed(2);
+    lista+=p*q;
+  }
+  const sub=lista*0.81,iva=sub*0.15,total=sub+iva,ahorro=lista*0.19;
+  const g=id=>document.getElementById(id);
+  if(g('c-lista'))g('c-lista').textContent='$'+lista.toFixed(2);
+  if(g('c-ahorro'))g('c-ahorro').textContent='-$'+ahorro.toFixed(2);
+  if(g('c-sub'))g('c-sub').textContent='$'+sub.toFixed(2);
+  if(g('c-iva'))g('c-iva').textContent='$'+iva.toFixed(2);
+  if(g('c-total'))g('c-total').textContent='$'+total.toFixed(2);
+}
+
+function delRow(i){const r=document.getElementById('cr-'+i);if(r)r.style.display='none';calcCot();}
+
+function showB2B(sec){
+  document.querySelectorAll('.b2b-sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.b2b-nav-item').forEach(n=>n.classList.remove('act'));
+  const s=document.getElementById('b2b-'+sec);if(s)s.classList.add('on');
+  const n=document.getElementById('bnav-'+sec);if(n)n.classList.add('act');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+updatePDP();calcCot();
+</script>
+
+<script id="ti-converter">
+(function(){
+  var icons = {
+  "ti-arrow-right": "M5 12h14M12 5l7 7-7 7",
+  "ti-bell": "M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0",
+  "ti-bike": "M5 19a3 3 0 100-6 3 3 0 000 6zM19 19a3 3 0 100-6 3 3 0 000 6zM8.5 12h7l2.3-5H6M8.5 12L7 5",
+  "ti-brand-whatsapp": "M0 0h24v24H0z",
+  "ti-building": "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18",
+  "ti-building-factory": "M3 21h18M3 7v14M8 21V7m5-5v19m5 0V9l-5 3",
+  "ti-building-factory-2": "M3 21h18M3 7v14M8 21V7m5-5v19m5 0V9l-5 3",
+  "ti-car": "M7 17m-2 0a2 2 0 104 0 2 2 0 10-4 0M17 17m-2 0a2 2 0 104 0 2 2 0 10-4 0M5 17H3v-6l2-5h14l2 5v6h-2M3 11h18",
+  "ti-certificate": "M12 2a5 5 0 100 10A5 5 0 0012 2zM8.21 13.89L7 23l5-3 5 3-1.21-9.11",
+  "ti-check": "M5 12l5 5L20 7",
+  "ti-chevron-down": "M6 9l6 6 6-6",
+  "ti-clock": "M12 12m-9 0a9 9 0 1018 0A9 9 0 003 12zM12 7v5l3 3",
+  "ti-color-swatch": "M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM3 9h18M9 3v18",
+  "ti-download": "M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 11l5 5 5-5M12 4v12",
+  "ti-file-description": "M14 3v4a1 1 0 001 1h4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2zM9 13h6M9 17h3",
+  "ti-file-invoice": "M14 3v4a1 1 0 001 1h4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2zM9 13h6M9 17h3",
+  "ti-file-text": "M14 3v4a1 1 0 001 1h4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2zM9 9h1M9 13h6M9 17h6",
+  "ti-files": "M15.5 2H8.6c-.4 0-.8.2-1.1.5L5 5M15.5 2l4.5 4.5V19a2 2 0 01-2 2H8a2 2 0 01-2-2V7M8.5 9h5.5M8.5 13h5.5",
+  "ti-hard-hat": "M12 2a9 9 0 019 9v1H3v-1a9 9 0 019-9zM3 12h18",
+  "ti-helmet": "M12 2a9 9 0 019 9v1H3v-1a9 9 0 019-9zM5 12v4a7 7 0 0014 0v-4",
+  "ti-home": "M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7",
+  "ti-info-circle": "M12 12m-9 0a9 9 0 1018 0A9 9 0 003 12zM12 8v4M12 16h.01",
+  "ti-layout-dashboard": "M4 4h6v8H4zM4 16h6v4H4zM14 12h6v8h-6zM14 4h6v4h-6",
+  "ti-lock": "M5 11a7 7 0 0114 0v2a2 2 0 01-2 2H7a2 2 0 01-2-2v-2zM12 16v2",
+  "ti-moon": "M12 3a6 6 0 009 9 9 9 0 11-9-9",
+  "ti-package": "M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 12l8-4.5M12 12v9M12 12L4 7.5",
+  "ti-phone": "M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2",
+  "ti-plus": "M12 5v14M5 12h14",
+  "ti-receipt": "M5 21V3l2 2 2-2 2 2 2-2 2 2 2-2v18l-2-2-2 2-2-2-2 2-2-2-2 2zM9 9h6M9 13h6",
+  "ti-refresh": "M20 11A8.1 8.1 0 004.5 9M4 5v4h4M4 13a8.1 8.1 0 0015.5 2M20 19v-4h-4",
+  "ti-road": "M3 19l3-14h12l3 14H3zM9 19l1-5h4l1 5",
+  "ti-rotate-clockwise": "M4.05 11a8 8 0 1117.9 3.5M4 9v2l2-2-2-2",
+  "ti-scissors": "M6 7m-3 0a3 3 0 106 0 3 3 0 10-6 0zM6 17m-3 0a3 3 0 106 0 3 3 0 10-6 0zM8.5 8.5l7 7M15.5 8.5L9 15",
+  "ti-search": "M10 10m-7 0a7 7 0 1014 0A7 7 0 003 10zM21 21l-6-6",
+  "ti-send": "M10 14L21 3M21 3l-6.5 18a.55.55 0 01-1 0L10 14l-7-3.5a.55.55 0 010-1L21 3",
+  "ti-settings": "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065zM12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0",
+  "ti-shopping-cart": "M6 19m-2 0a2 2 0 104 0 2 2 0 10-4 0zM17 19m-2 0a2 2 0 104 0 2 2 0 10-4 0zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6",
+  "ti-star": "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  "ti-stripe": "M4 8h16M4 16h16",
+  "ti-table": "M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18",
+  "ti-thread": "M5 12a7 7 0 1014 0 7 7 0 00-14 0zM5 12h14M12 5v14",
+  "ti-topology-ring-2": "M12 12m-9 0a9 9 0 1018 0 9 9 0 10-18 0zM12 12m-4 0a4 4 0 108 0 4 4 0 10-8 0zM12 12m-1 0a1 1 0 102 0 1 1 0 10-2 0",
+  "ti-trending-up": "M3 17l4-4 4 3 4-5 4-4M20 7h-4v4",
+  "ti-truck": "M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M9 17a2 2 0 104 0 2 2 0 00-4 0zM20 17a2 2 0 104 0 2 2 0 00-4 0zM14 8h8l-2 9h-6",
+  "ti-user-plus": "M8 7a4 4 0 108 0 4 4 0 00-8 0zM16 19H3a3 3 0 016 0h7M19 15v6M16 18h6",
+  "ti-users": "M9 7m-4 0a4 4 0 108 0 4 4 0 10-8 0zM3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87",
+  "ti-x": "M18 6L6 18M6 6l12 12",
+};
+  function applyIcons() {
+    var els = document.querySelectorAll('i[class*="ti ti-"]');
+    els.forEach(function(el) {
+      var classes = el.className;
+      var match = classes.match(/ti-([a-z0-9-]+)/);
+      if (!match) return;
+      var name = 'ti-' + match[1];
+      var d = icons[name];
+      if (!d) return;
+      var size = el.style.fontSize || '16px';
+      var color = el.style.color || 'currentColor';
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="' + color + '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0" aria-hidden="true"><path d="' + d + '"/></svg>';
+      var span = document.createElement('span');
+      span.innerHTML = svg;
+      span.style.display = 'inline-flex';
+      span.style.alignItems = 'center';
+      // copy aria-label if any
+      var lbl = el.getAttribute('aria-label');
+      if (lbl) span.setAttribute('aria-label', lbl);
+      el.parentNode.replaceChild(span, el);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyIcons);
+  } else {
+    applyIcons();
+  }
+})();
+</script>
+
+</body>
+</html>
