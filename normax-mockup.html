@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Normax — Maquetación interactiva (propuesta)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0EA; --bg-elevated:#FFFFFF; --bg-sunken:#EAE7DE;
+  --text-primary:#15181C; --text-secondary:#55534C; --text-muted:#8B897F;
+  --border:#DEDBD0; --border-strong:#C7C3B5;
+  --brand:#C9E11F; --brand-ink:#12181F;
+  --warm:#C6501F; --warm-bg:#F7E4D8; --warm-strong:#8A3714;
+  --cool:#0C6E68; --cool-bg:#DCEFEC; --cool-strong:#084F4B;
+  --success:#2E5E2C; --success-bg:#DCEBC7;
+  --font-display:'Barlow Condensed',sans-serif; --font-body:'Inter',sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1014; --bg-elevated:#171D22; --bg-sunken:#11161A;
+    --text-primary:#F1EFE8; --text-secondary:#B7B4A9; --text-muted:#82807A;
+    --border:#262D33; --border-strong:#38414A;
+    --brand:#D7E92B; --brand-ink:#0B1014;
+    --warm:#F2A623; --warm-bg:#3A2712; --warm-strong:#FAC775;
+    --cool:#4FD9C4; --cool-bg:#0F2C2A; --cool-strong:#8FE8DA;
+    --success:#8FCB5C; --success-bg:#1E2E12;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1014; --bg-elevated:#171D22; --bg-sunken:#11161A;
+  --text-primary:#F1EFE8; --text-secondary:#B7B4A9; --text-muted:#82807A;
+  --border:#262D33; --border-strong:#38414A;
+  --brand:#D7E92B; --brand-ink:#0B1014;
+  --warm:#F2A623; --warm-bg:#3A2712; --warm-strong:#FAC775;
+  --cool:#4FD9C4; --cool-bg:#0F2C2A; --cool-strong:#8FE8DA;
+  --success:#8FCB5C; --success-bg:#1E2E12;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text-primary);
+  font-family:var(--font-body); line-height:1.6; font-size:16px;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+img,svg{max-width:100%;}
+.container{max-width:1120px; margin:0 auto; padding:0 24px;}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:700; margin:0; color:var(--text-primary);}
+a{color:inherit;}
+button{font-family:var(--font-body); cursor:pointer;}
+.eyebrow{font-family:var(--font-body); font-weight:700; font-size:12.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--brand); margin:0 0 10px;}
+.section{padding:64px 0;}
+.section-head{max-width:640px; margin:0 0 32px;}
+.section-head h2{font-size:32px; line-height:1.15; margin-bottom:10px;}
+.section-head p{color:var(--text-secondary); margin:0; max-width:56ch;}
+.btn{display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:15px; padding:13px 22px; border-radius:9px; border:1.5px solid transparent; cursor:pointer; text-decoration:none; transition:transform .12s ease, filter .12s ease;}
+.btn:hover{transform:translateY(-1px);}
+.btn-brand{background:var(--brand); color:var(--brand-ink);}
+.btn-brand:hover{filter:brightness(1.06);}
+.btn-outline{background:transparent; color:var(--text-primary); border-color:var(--border-strong);}
+.btn-outline:hover{border-color:var(--text-muted);}
+.btn-warm{background:var(--warm); color:#1A0E04;}
+.btn-cool{background:var(--cool); color:#04211E;}
+.btn-sm{padding:9px 16px; font-size:13.5px; border-radius:7px;}
+.pill{display:inline-block; padding:4px 12px; border-radius:20px; font-size:12.5px; font-weight:600; border:1px solid var(--border-strong); color:var(--text-secondary);}
+
+/* ===== header ===== */
+.topbar{background:var(--bg-sunken); color:var(--text-muted); font-size:12.5px; padding:7px 0; border-bottom:1px solid var(--border);}
+.topbar .container{display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;}
+header.mainnav{position:sticky; top:0; z-index:40; background:var(--bg); border-bottom:1px solid var(--border);}
+.navrow{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
+.logo{font-family:var(--font-display); font-weight:700; font-size:22px; letter-spacing:.02em; background:none; border:none; color:var(--text-primary); cursor:pointer; padding:0;}
+.navlinks{display:flex; gap:26px; list-style:none; margin:0; padding:0;}
+.navlinks button{background:none; border:none; color:var(--text-secondary); font-size:14.5px; font-weight:500; padding:0;}
+.navlinks button:hover{color:var(--text-primary);}
+.navright{display:flex; align-items:center; gap:16px;}
+.cart{position:relative; font-size:20px;}
+.cart .badge{position:absolute; top:-8px; right:-10px; background:var(--warm); color:#1A0E04; font-size:10.5px; font-weight:700; border-radius:10px; min-width:17px; height:17px; display:flex; align-items:center; justify-content:center; padding:0 3px;}
+@media(max-width:760px){ .navlinks{display:none;} }
+
+/* ===== hero ===== */
+.hero{padding:56px 0 40px; background:linear-gradient(180deg, var(--bg-sunken), var(--bg));}
+.hero h1{font-size:52px; line-height:1.03; margin:8px 0 14px;}
+.hero .sub{font-size:17px; color:var(--text-secondary); max-width:52ch; margin-bottom:26px;}
+.hero-ctas{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;}
+.hero-badges{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13.5px; color:var(--text-secondary); margin-bottom:18px;}
+.ansi-word{font:inherit; font-weight:700; color:var(--brand); background:none; border:none; border-bottom:1.5px dashed var(--brand); padding:0; cursor:pointer;}
+.hero-stats{display:flex; gap:10px; flex-wrap:wrap;}
+.stat-chip{background:var(--bg-elevated); border:1px solid var(--border); border-radius:20px; padding:7px 15px; font-size:13px; font-weight:600; color:var(--text-secondary); transition:transform .15s ease, border-color .15s ease, background .15s ease;}
+.stat-chip.hoverable:hover{transform:translateY(-2px) scale(1.03); border-color:var(--brand); background:var(--bg-sunken); color:var(--text-primary);}
+
+/* ===== logos strip ===== */
+.logos-strip{padding:30px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-sunken);}
+.logos-row{display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:center;}
+.logo-slot{width:120px; height:56px; border:1.5px dashed var(--border-strong); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;}
+.logos-caption{text-align:center; color:var(--text-muted); font-size:12px; margin-top:14px; font-style:italic;}
+
+/* ===== catalog ===== */
+.chips{display:flex; gap:8px; margin-bottom:26px; flex-wrap:wrap;}
+.chip{padding:7px 16px; border-radius:20px; border:1px solid var(--border-strong); background:var(--bg-elevated); font-size:13.5px; font-weight:600; color:var(--text-secondary);}
+.chip.active{background:var(--brand); color:var(--brand-ink); border-color:var(--brand);}
+.grid{display:grid; gap:16px;}
+.grid-cat{grid-template-columns:repeat(auto-fill, minmax(240px,1fr));}
+.cat-card{border:1px solid var(--border); border-radius:var(--r); padding:18px; background:var(--bg-elevated);}
+.cat-card .num{font-family:var(--font-display); font-size:13px; color:var(--text-muted); font-weight:700;}
+.cat-card .tag{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:12px; margin-left:8px;}
+.tag-cert{background:var(--success-bg); color:var(--success);}
+.tag-nocert{background:var(--bg-sunken); color:var(--text-muted); border:1px solid var(--border-strong);}
+.cat-card h4{font-size:17px; margin:10px 0 6px;}
+.cat-card p{font-size:13.5px; color:var(--text-secondary); margin:0 0 12px;}
+.cat-card a{font-size:13px; font-weight:700; color:var(--brand); text-decoration:none;}
+
+/* ===== conoce normax ===== */
+.about-teaser{background:var(--bg-sunken); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+.about-teaser .section-head p{max-width:60ch;}
+.value-row{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:28px 0 30px;}
+.value-item{background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--r); padding:20px; font-weight:600; font-size:15.5px;}
+@media(max-width:700px){ .value-row{grid-template-columns:1fr;} }
+
+/* ===== product cards / tienda ===== */
+.grid-prod{grid-template-columns:repeat(auto-fill, minmax(210px,1fr));}
+.prod-card{border:1px solid var(--border); border-radius:var(--r); overflow:hidden; background:var(--bg-elevated); display:flex; flex-direction:column;}
+.swatch{height:110px; background:
+  repeating-linear-gradient(45deg, var(--sw1,#9a9a9a), var(--sw1,#9a9a9a) 10px, var(--sw2,#c9c9c9) 10px, var(--sw2,#c9c9c9) 20px);
+}
+.prod-body{padding:14px; flex:1; display:flex; flex-direction:column;}
+.prod-body .cat{font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.04em;}
+.prod-body h4{font-size:16px; margin:6px 0 4px;}
+.prod-body .spec{font-size:12px; color:var(--text-secondary); margin-bottom:10px; flex:1;}
+.prod-body .price{font-weight:700; font-size:16px; margin-bottom:2px;}
+.prod-body .price small{font-weight:500; color:var(--text-muted); font-size:12px;}
+.prod-body .btn{margin-top:8px; width:100%; justify-content:center;}
+
+/* ===== carousel ===== */
+.carousel-wrap{border:1px solid var(--border); border-radius:18px; overflow:hidden; background:var(--bg-elevated);}
+.carousel-track{display:flex; transition:transform .4s ease;}
+.slide{min-width:100%; padding:40px 36px; display:grid; grid-template-columns:1fr; gap:6px;}
+.slide .ph{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;}
+.slide h3{font-size:30px; margin-bottom:10px;}
+.slide .sub{color:var(--text-secondary); font-size:15px; margin-bottom:16px; max-width:60ch;}
+.slide ul{margin:0 0 20px; padding-left:20px; color:var(--text-secondary);}
+.slide ul li{margin-bottom:6px;}
+.slide .note{font-size:12.5px; color:var(--text-muted); margin-top:8px;}
+.carousel-nav{display:flex; align-items:center; justify-content:center; gap:16px; padding:16px 0 6px;}
+.carousel-arrow{background:var(--bg-sunken); border:1px solid var(--border-strong); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text-primary);}
+.dots{display:flex; gap:8px;}
+.dot{width:9px; height:9px; border-radius:50%; background:var(--border-strong); border:none; padding:0;}
+.dot.active{background:var(--brand); width:22px; border-radius:6px;}
+
+/* ===== industries ===== */
+.grid-ind{grid-template-columns:repeat(auto-fill, minmax(220px,1fr));}
+.ind-card{border:1px solid var(--border); border-radius:var(--r); background:var(--bg-elevated); overflow:hidden;}
+.ind-ph{height:90px; background:var(--bg-sunken); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:11px;}
+.ind-body{padding:14px;}
+.ind-body .num{font-size:11px; color:var(--text-muted); font-weight:700;}
+.ind-body h4{font-size:15.5px; margin:6px 0 4px;}
+.ind-body p{font-size:12.5px; color:var(--text-secondary); margin:0;}
+
+/* ===== respaldo tecnico ===== */
+.trust{background:var(--bg-sunken); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+.trust p.lead{font-size:15.5px; color:var(--text-secondary); max-width:70ch; margin-bottom:26px;}
+.trust-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px;}
+.trust-card{background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--r); padding:16px;}
+.trust-card b{display:block; font-size:14.5px; margin-bottom:4px;}
+.trust-card span{font-size:12.5px; color:var(--text-secondary);}
+@media(max-width:700px){ .trust-cards{grid-template-columns:1fr;} }
+.ansi-form{max-width:440px; margin-top:18px; display:none; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--r); padding:18px;}
+.ansi-form.open{display:block;}
+.form-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
+.form-row input{flex:1; min-width:150px; padding:10px 12px; border-radius:8px; border:1.5px solid var(--border-strong); background:var(--bg); color:var(--text-primary); font-family:var(--font-body); font-size:14px;}
+.form-err{color:#C24949; font-size:12.5px; display:none; margin:-4px 0 10px;}
+.form-ok{display:none; background:var(--success-bg); color:var(--success); border-radius:8px; padding:9px 13px; font-size:13px; font-weight:600; margin-top:8px;}
+
+/* ===== testimonials ===== */
+.testi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.testi{border:1px solid var(--border); background:var(--bg-elevated); border-radius:var(--r); padding:20px; font-size:14px; color:var(--text-secondary);}
+.testi b{display:block; color:var(--text-primary); margin-top:10px; font-size:14px;}
+.testi span{font-size:12.5px; color:var(--text-muted);}
+@media(max-width:760px){ .testi-grid{grid-template-columns:1fr;} }
+
+/* ===== newsletter ===== */
+.newsletter{display:flex; gap:10px; flex-wrap:wrap; max-width:480px;}
+.newsletter input{flex:1; min-width:200px; padding:12px 14px; border-radius:9px; border:1.5px solid var(--border-strong); background:var(--bg-elevated); color:var(--text-primary); font-family:var(--font-body);}
+
+/* ===== footer ===== */
+footer{background:var(--bg-sunken); border-top:1px solid var(--border); padding:48px 0 28px; font-size:13.5px; color:var(--text-secondary);}
+.foot-grid{display:grid; grid-template-columns:2fr 1fr 1fr; gap:28px; margin-bottom:28px;}
+.foot-grid h5{font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:12px;}
+.foot-grid ul{list-style:none; margin:0; padding:0;}
+.foot-grid li{margin-bottom:8px;}
+.foot-grid a{text-decoration:none; color:var(--text-secondary);}
+.foot-grid a:hover{color:var(--text-primary);}
+.foot-note{border-top:1px solid var(--border); padding-top:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:12.5px; color:var(--text-muted);}
+.legal-flag{background:var(--warm-bg); color:var(--warm-strong); border-radius:8px; padding:10px 14px; font-size:12.5px; margin-bottom:20px;}
+@media(max-width:760px){ .foot-grid{grid-template-columns:1fr;} }
+
+/* ===== about page ===== */
+.about-hero{padding:44px 0 10px;}
+.back-link{background:none; border:none; color:var(--text-secondary); font-size:14px; font-weight:600; padding:0; margin-bottom:18px; display:inline-flex; align-items:center; gap:6px;}
+.back-link:hover{color:var(--text-primary);}
+.draft-flag{background:var(--warm-bg); color:var(--warm-strong); padding:10px 14px; border-radius:9px; font-size:13px; margin-bottom:26px; max-width:640px;}
+.about-block{padding:40px 0; border-top:1px solid var(--border);}
+.about-block h2{font-size:26px; margin-bottom:12px;}
+.about-block p{color:var(--text-secondary); max-width:66ch;}
+.branch-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
+.branch-card{border:1px solid var(--border); border-radius:var(--r); padding:18px; background:var(--bg-elevated);}
+.branch-card h4{font-size:16px; margin-bottom:6px;}
+.branch-card p{font-size:13.5px; margin:2px 0; color:var(--text-secondary);}
+@media(max-width:700px){ .branch-grid{grid-template-columns:1fr;} }
+.know-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px;}
+.know-card{border:1px solid var(--border); border-radius:var(--r); padding:16px; background:var(--bg-elevated);}
+.know-card .k{font-size:11.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase;}
+.know-card h4{font-size:15.5px; margin:6px 0;}
+.know-card p{font-size:13px; color:var(--text-secondary); margin:0;}
+@media(max-width:760px){ .know-grid{grid-template-columns:1fr;} }
+
+/* ===== product page ===== */
+.product-wrap{display:grid; grid-template-columns:1fr 1fr; gap:44px; padding:44px 0;}
+@media(max-width:800px){ .product-wrap{grid-template-columns:1fr;} }
+.product-photo{height:340px; border-radius:16px;}
+.product-info .cat{font-size:12px; color:var(--text-muted); font-weight:700; text-transform:uppercase;}
+.product-info h1{font-size:32px; margin:8px 0 6px;}
+.product-info .spec{color:var(--text-secondary); margin-bottom:18px;}
+.price-box{display:flex; gap:22px; margin-bottom:22px; flex-wrap:wrap;}
+.price-box div b{display:block; font-size:22px;}
+.price-box div span{font-size:12.5px; color:var(--text-muted);}
+.qty-box{border:1px solid var(--border); border-radius:var(--r); padding:18px; margin-bottom:20px; background:var(--bg-elevated);}
+.qty-label{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:10px;}
+.qty-controls{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
+.qty-btn{width:36px; height:36px; border-radius:8px; border:1.5px solid var(--border-strong); background:var(--bg-sunken); font-size:18px; font-weight:700; color:var(--text-primary);}
+.qty-input{width:90px; text-align:center; padding:8px 6px; border-radius:8px; border:1.5px solid var(--border-strong); background:var(--bg); color:var(--text-primary); font-family:var(--font-body); font-weight:700; font-size:15px;}
+.qty-rolls{font-weight:700; color:var(--brand-on, var(--text-primary));}
+.qty-hint{font-size:12px; color:var(--text-muted); margin-top:4px;}
+.qty-total{font-size:15px; margin-top:10px;}
+.qty-total b{font-size:22px;}
+
+.screen{display:none;}
+.screen.active{display:block;}
+</style>
+</head>
+<body>
+
+<!-- ============ SCREEN: HOME ============ -->
+<div class="screen active" id="screen-home">
+
+<div class="topbar"><div class="container">
+  <span>Envíos a todo Ecuador 24–48 h · Stock permanente y control operativo</span>
+  <span>📞 099 499 8508</span>
+</div></div>
+
+<header class="mainnav"><div class="container navrow">
+  <button class="logo" onclick="goHome()">NORMAX</button>
+  <ul class="navlinks">
+    <li><button onclick="scrollToId('sec-catalogo')">Catálogo</button></li>
+    <li><button onclick="scrollToId('sec-industrias')">Industrias</button></li>
+    <li><button onclick="scrollToId('sec-respaldo')">Certificaciones</button></li>
+    <li><button onclick="goAbout('sec-conocimiento')">Blog técnico</button></li>
+  </ul>
+  <div class="navright">
+    <div class="cart">🛒<span class="badge" id="cartBadge">0</span></div>
+  </div>
+</div></header>
+
+<section class="hero"><div class="container">
+  <p class="eyebrow">Reflectivos certificados · <button class="ansi-word" onclick="scrollToId('sec-respaldo')">ANSI/ISEA</button></p>
+  <h1>Reflectivos que salvan vidas.</h1>
+  <p class="sub">Visible. Protegido. Seguro. Con stock garantizado y ficha técnica verificable.</p>
+  <div class="hero-ctas">
+    <button class="btn btn-warm" onclick="goToCarousel('confeccionista')">Soy fabricante</button>
+    <button class="btn btn-cool" onclick="goToCarousel('contratista')">Soy contratista</button>
+  </div>
+  <div class="hero-stats">
+    <span class="stat-chip hoverable" title="Empresas que ya confían en Normax">+200 clientes B2B</span>
+    <span class="stat-chip">50+ variedades</span>
+    <span class="stat-chip">Entregas 24 h en Quito</span>
+  </div>
+</div></section>
+
+<section class="logos-strip"><div class="container">
+  <div class="logos-row">
+    <div class="logo-slot">LOGO</div>
+    <div class="logo-slot">LOGO</div>
+    <div class="logo-slot">LOGO</div>
+    <div class="logo-slot">LOGO</div>
+  </div>
+  <p class="logos-caption">Espacio reservado — logos de normativa y certificación (ANSI, ISEA, etc.)</p>
+</div></section>
+
+<section class="section" id="sec-catalogo"><div class="container">
+  <p class="eyebrow">Catálogo Normax</p>
+  <div class="section-head"><h2>Comprar por categorías</h2></div>
+  <div class="chips">
+    <button class="chip active" onclick="filterCats('todas', this)">Todas</button>
+    <button class="chip" onclick="filterCats('si', this)">Certificadas</button>
+    <button class="chip" onclick="filterCats('no', this)">No certificadas</button>
+  </div>
+  <div class="grid grid-cat" id="catGrid"></div>
+  <p style="margin-top:22px;"><a class="btn btn-outline" href="#" onclick="return false;">Ver todos los productos</a></p>
+</div></section>
+
+<section class="section about-teaser"><div class="container">
+  <p class="eyebrow">Conoce a Normax</p>
+  <div class="section-head">
+    <h2>Esto es Normax: una marca corporativa. Dos marcas especializadas en alta visibilidad.</h2>
+    <p>Detrás de cada rollo hay una marca especializada que respalda la reflectividad en prendas de vestir.</p>
+  </div>
+  <div class="value-row">
+    <div class="value-item">Reflectivos que salvan vidas</div>
+    <div class="value-item">La mejor calidad-precio para confección</div>
+    <div class="value-item">Asesoría técnica sin costo</div>
+  </div>
+  <button class="btn btn-brand" onclick="goAbout()">Conoce Normax</button>
+</div></section>
+
+<section class="section" id="sec-tienda"><div class="container">
+  <p class="eyebrow">Tienda</p>
+  <div class="section-head"><h2>Productos más vendidos</h2></div>
+  <div class="grid grid-prod" id="prodGrid"></div>
+</div></section>
+
+<section class="section" id="sec-carousel"><div class="container">
+  <p class="eyebrow">Portal mayoristas</p>
+  <div class="section-head"><h2>Cuéntanos quién eres y te damos la propuesta que te conviene.</h2></div>
+  <div class="carousel-wrap">
+    <div class="carousel-track" id="carTrack">
+      <div class="slide">
+        <p class="ph" style="color:var(--cool)">Propuesta — contratistas</p>
+        <h3>Asesoría técnica gratuita para tu proyecto</h3>
+        <p class="sub">Antes de cotizar, te ayudamos a elegir el reflectivo correcto según norma, entorno y presupuesto — sin costo.</p>
+        <ul>
+          <li>Diagnóstico técnico sin costo antes de comprar.</li>
+          <li>Cumplimiento garantizado de la norma ANSI/ISEA 107.</li>
+          <li>Cotización en menos de 24 horas.</li>
+          <li>Casos de éxito documentados por industria.</li>
+        </ul>
+        <a class="btn btn-cool" id="ctaContratista" href="#" target="_blank">Agenda tu asesoría gratis</a>
+      </div>
+      <div class="slide">
+        <p class="ph" style="color:var(--warm)">Propuesta — confeccionistas</p>
+        <h3>Precios de fábrica para tu producción en serie</h3>
+        <p class="sub">Compra al por mayor y accede a condiciones preferenciales si confeccionas uniformes, o prendas de alta visibilidad.</p>
+        <ul>
+          <li>Precios escalonados por volumen: mientras más compras, menor tu costo por metro.</li>
+          <li>Muestra física sin costo antes de definir tu pedido.</li>
+          <li>Tiempos de entrega ajustados a producción en serie, no a venta unitaria.</li>
+          <li>Ficha técnica lista para especificar directamente en tus prendas.</li>
+        </ul>
+        <a class="btn btn-warm" id="ctaConfeccionista" href="#" target="_blank">Solicita la lista de precios mayoristas</a>
+        <p class="note">Somos tu aliado textil estratégico.</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-arrow" onclick="carPrev()">‹</button>
+    <div class="dots">
+      <button class="dot" onclick="setCarouselSlide(0)"></button>
+      <button class="dot" onclick="setCarouselSlide(1)"></button>
+    </div>
+    <button class="carousel-arrow" onclick="carNext()">›</button>
+  </div>
+</div></section>
+
+<section class="section" id="sec-industrias"><div class="container">
+  <p class="eyebrow">Soluciones por sector</p>
+  <div class="section-head"><h2>Categorías por industria</h2><p>Los sectores que el catálogo declara para cada familia de producto.</p></div>
+  <div class="grid grid-ind" id="indGrid"></div>
+</div></section>
+
+<section class="section trust" id="sec-respaldo"><div class="container">
+  <p class="eyebrow">Respaldo técnico</p>
+  <div class="section-head"><h2>La certificación no es un extra. Es la prueba.</h2></div>
+  <p class="lead">Una cinta reflectiva sin certificar puede verse igual a simple vista, pero no garantiza visibilidad real en condiciones de poca luz. Especificar producto certificado ANSI/ISEA 107 significa cumplir la normativa de seguridad ocupacional, respaldar el proceso ante auditorías o licitaciones, y asegurar que el uniforme siga protegiendo después de decenas de lavados — no solo el primer día.</p>
+  <div class="trust-cards">
+    <div class="trust-card"><b>ANSI/ISEA</b><span>Normativa vigente y qué exige.</span></div>
+    <div class="trust-card"><b>Fichas técnicas</b><span>Especificaciones técnicas por referencia.</span></div>
+    <div class="trust-card"><b>Documentación</b><span>Soporte para compras y licitaciones.</span></div>
+  </div>
+  <button class="btn btn-brand" onclick="toggleAnsiForm()">Quiero asesoría personalizada</button>
+  <div class="ansi-form" id="ansiForm">
+    <div class="form-row">
+      <input type="text" id="fName" placeholder="Nombre">
+      <input type="tel" id="fPhone" placeholder="Teléfono">
+    </div>
+    <div class="form-err" id="fErr">Completa nombre y teléfono para continuar.</div>
+    <button class="btn btn-brand btn-sm" onclick="submitAnsiForm()">Enviar</button>
+    <div class="form-ok" id="fOk">Gracias — el equipo técnico de Normax te contactará pronto.</div>
+  </div>
+</div></section>
+
+<section class="section" id="sec-testimonios"><div class="container">
+  <p class="eyebrow">Prueba social</p>
+  <div class="section-head"><h2>Lo que dicen nuestros clientes</h2></div>
+  <div class="testi-grid">
+    <div class="testi">"El número uno del mercado nacional. Llevamos 5 años trabajando juntos."<b>Miguel Lechón</b><span>Protecziona · Quito</span></div>
+    <div class="testi">"Las certificaciones ANSI nos permiten respaldar especificaciones en procesos institucionales."<b>Daniela Tacán</b><span>EMBERS · Quito</span></div>
+    <div class="testi">"Calidad y atención inmediata. La respuesta técnica hace más simple la compra."<b>Elvia Saritama</b><span>Almacenes Puebla</span></div>
+  </div>
+</div></section>
+
+<section class="section" id="sec-newsletter"><div class="container">
+  <p class="eyebrow">Boletín técnico</p>
+  <div class="section-head"><h2>Recibe novedades, fichas y criterios de especificación.</h2></div>
+  <div class="newsletter">
+    <input type="email" placeholder="Correo electrónico">
+    <button class="btn btn-brand" onclick="return false;">Suscribirme</button>
+  </div>
+</div></section>
+
+<footer><div class="container">
+  <div class="legal-flag">⚠ Pendiente: publicar Términos y condiciones y Política de tratamiento de datos personales antes de habilitar los formularios de captura (ver informe, punto P10).</div>
+  <div class="foot-grid">
+    <div>
+      <h5>Normax</h5>
+      <p style="max-width:36ch;">Soluciones reflectivas certificadas para seguridad industrial, uniformes, vialidad y fabricantes textiles. Visible. Protegido. Seguro.</p>
+    </div>
+    <div>
+      <h5>Empresa</h5>
+      <ul>
+        <li><button onclick="scrollToId('sec-industrias')" style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;">Industrias</button></li>
+        <li><button onclick="scrollToId('sec-respaldo')" style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;">Certificaciones</button></li>
+        <li><button onclick="goAbout('sec-conocimiento')" style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:0;">Centro de conocimiento</button></li>
+        <li><a href="#" onclick="return false;">Políticas de envío</a></li>
+        <li><a href="#" onclick="return false;"><strong>Términos y condiciones</strong></a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Contacto</h5>
+      <ul>
+        <li>info@normaxecuador.com</li>
+        <li>099 499 8508</li>
+        <li><a id="waFooter" href="#" target="_blank">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-note">
+    <span>Normax® © 2026 — La norma, al máximo.</span>
+    <span>Maquetación interactiva de propuesta — BraDoc</span>
+  </div>
+</div></footer>
+</div>
+
+<!-- ============ SCREEN: ABOUT (Conoce Normax) ============ -->
+<div class="screen" id="screen-about">
+<header class="mainnav"><div class="container navrow">
+  <button class="logo" onclick="goHome()">NORMAX</button>
+  <div class="navright"><div class="cart">🛒<span class="badge" id="cartBadge2">0</span></div></div>
+</div></header>
+
+<div class="container about-hero">
+  <button class="back-link" onclick="goHome()">← Volver al inicio</button>
+  <p class="eyebrow">Conoce a Normax</p>
+  <h1 style="font-size:38px;">Una marca corporativa. Dos marcas especializadas.</h1>
+  <p class="draft-flag">Texto de ejemplo para maquetación — reemplazar con la historia, cifras y datos reales de Normax antes de publicar.</p>
+</div>
+
+<div class="about-block"><div class="container">
+  <h2>Historia</h2>
+  <p>Normax nace como la marca corporativa que agrupa la operación técnica y comercial detrás de dos marcas especializadas en alta visibilidad: AAA Cinta Reflectiva, enfocada en confección textil, y Reflomax, enfocada en microprisma y aplicación vehicular. (Completar con la historia real: año de fundación, motivación original, hitos.)</p>
+</div></div>
+
+<div class="about-block"><div class="container">
+  <h2>Equipo</h2>
+  <p>Detrás de cada cotización hay un equipo técnico que revisa la especificación antes de vender — el mismo criterio de "asesoramiento técnico: diagnóstico antes de vender" que Normax ya promete en su home. (Completar con nombres, roles o una fotografía del equipo.)</p>
+</div></div>
+
+<div class="about-block"><div class="container">
+  <h2>Experiencia</h2>
+  <p>+200 clientes B2B ya confían en Normax, con más de 50 variedades de producto en catálogo y entregas en 24 horas en Quito. (Completar con años en el mercado y sectores atendidos con más detalle.)</p>
+</div></div>
+
+<div class="about-block"><div class="container">
+  <h2>Sucursales</h2>
+  <div class="branch-grid">
+    <div class="branch-card">
+      <h4>Quito</h4>
+      <p>Calle Auz E7-166 y Últimas Noticias, sector Iñaquito</p>
+      <p style="color:var(--text-muted);">Horario: por confirmar</p>
+    </div>
+    <div class="branch-card">
+      <h4>Guayaquil</h4>
+      <p>Av. Francisco de Orellana km 4.5, C.C. La Gran Manzana, local 73</p>
+      <p style="color:var(--text-muted);">Horario: por confirmar</p>
+    </div>
+  </div>
+</div></div>
+
+<div class="about-block" id="sec-conocimiento"><div class="container">
+  <h2>Centro de conocimiento</h2>
+  <p>Guías claras para elegir, especificar, comprar y mantener soluciones reflectivas según el entorno de trabajo.</p>
+  <div class="know-grid">
+    <div class="know-card"><span class="k">Guía técnica</span><h4>Cómo elegir la cinta reflectiva según el entorno de trabajo</h4></div>
+    <div class="know-card"><span class="k">Lavado y mantenimiento</span><h4>Cómo maximizar la vida útil de prendas reflectivas</h4><p>Variables de lavado, temperatura, abrasión y documentación técnica.</p></div>
+    <div class="know-card"><span class="k">Normativa vehicular</span><h4>DOT-C2: qué revisar antes de especificar reflectivo vehicular</h4><p>Aplicación, continuidad, contraste y criterios técnicos de compra.</p></div>
+  </div>
+</div></div>
+
+<div class="about-block" style="border-bottom:1px solid var(--border); padding-bottom:56px;"><div class="container">
+  <button class="btn btn-brand" onclick="goHome('sec-catalogo')">Ver catálogo</button>
+</div></div>
+</div>
+
+<!-- ============ SCREEN: PRODUCT ============ -->
+<div class="screen" id="screen-product">
+<header class="mainnav"><div class="container navrow">
+  <button class="logo" onclick="goHome()">NORMAX</button>
+  <div class="navright"><div class="cart">🛒<span class="badge" id="cartBadge3">0</span></div></div>
+</div></header>
+
+<div class="container">
+  <div style="padding-top:24px;"><button class="back-link" onclick="goHome('sec-tienda')">← Volver al catálogo</button></div>
+  <div class="product-wrap">
+    <div class="product-photo" id="prodPhoto"></div>
+    <div class="product-info">
+      <p class="cat" id="pCat">Cintas grises</p>
+      <h1 id="pName">Cintas Grises KR500</h1>
+      <p class="spec" id="pSpec">Gris · Ancho 5 cm (2") · 500 cd.lx · 50 ciclos de lavado</p>
+      <div class="price-box">
+        <div><b id="pPriceM">$0.84</b><span>por metro</span></div>
+        <div><b id="pPriceRoll">$84.00</b><span>por rollo (100 m)</span></div>
+      </div>
+      <div class="qty-box">
+        <p class="qty-label">Cantidad (en rollos de 100 m)</p>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input class="qty-input" id="qtyInput" value="100" oninput="onQtyInput(this.value)">
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+          <span class="qty-rolls" id="qtyRollsLabel">1 rollo</span>
+        </div>
+        <p class="qty-hint">La cantidad avanza en múltiplos de 100 m (1 rollo completo por unidad).</p>
+        <p class="qty-total">Total: <b id="qtyTotal">$84.00</b></p>
+      </div>
+      <button class="btn btn-brand" onclick="addToCart()">Agregar al pedido</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const WA_PHONE = "593994998508";
+function waLink(msg){ return "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(msg); }
+
+/* ---------- data ---------- */
+const categoryData = [
+  {num:"01", cert:"si", name:"Cintas grises", desc:"Cinta gris cosible con certificación y desempeño documentado."},
+  {num:"02", cert:"si", name:"Bicolores", desc:"Fondo fluorescente con banda reflectiva, cosida sobre tejido."},
+  {num:"03", cert:"si", name:"Microprismáticas", desc:"Microprisma de alta intensidad para baja luz."},
+  {num:"04", cert:"si", name:"Retardantes al fuego", desc:"Cinta cosible con comportamiento retardante al fuego."},
+  {num:"05", cert:"si", name:"Vinil", desc:"Segmentado, continuo, rollo ancho y corte a medida."},
+  {num:"06", cert:"si", name:"Cinta para sellar costuras", desc:"Sellado de costuras en prenda impermeable."},
+  {num:"07", cert:"no", name:"Cintas grises", desc:"Línea gris de entrada para volumen, cosible sobre prenda."},
+  {num:"08", cert:"no", name:"Bicolores", desc:"Bicolor en aplicación termofijada o cosida, sin certificar."},
+  {num:"09", cert:"no", name:"PVC", desc:"Microesferas sobre soporte de PVC."},
+  {num:"10", cert:"no", name:"Sesgo reflectivo", desc:"Sesgo para remates y filos de prenda."},
+  {num:"11", cert:"no", name:"Tela reflectiva", desc:"Tela reflectiva en rollo ancho, hasta 140 cm."},
+];
+
+const industryData = [
+  {num:"01", name:"Logística", desc:"Marcación de flota, almacén y personal de patio."},
+  {num:"02", name:"Transporte", desc:"Marcación vehicular y seguridad vial."},
+  {num:"03", name:"Construcción", desc:"Uniformes y EPP de alta visibilidad."},
+  {num:"04", name:"Petróleo", desc:"Ropa de trabajo para campo y planta."},
+  {num:"05", name:"Minería", desc:"Visibilidad subterránea y entorno extremo."},
+  {num:"06", name:"Gas", desc:"Uniformes para operación y mantenimiento."},
+  {num:"07", name:"Electricidad", desc:"Cuadrillas de red y trabajo en altura."},
+  {num:"08", name:"Vialidad", desc:"Señalización y operativos nocturnos."},
+  {num:"09", name:"Seguridad", desc:"Vigilancia, control de acceso y emergencia."},
+  {num:"10", name:"Telecomunicaciones", desc:"Trabajo en torre, poste y vía pública."},
+  {num:"11", name:"Pesca", desc:"Cubierta, puerto y faena nocturna."},
+  {num:"12", name:"Personalización", desc:"Logotipo y marca de agua sobre el reflectivo."},
+];
+
+const productData = [
+  {sku:"031-KR500-50MM", cat:"Cintas grises", name:"Cintas Grises KR500", spec:'Gris · Ancho 5 cm (2") · 500 cd.lx · 50 ciclos de lavado', pm:0.84, sw1:"#8a8a8a", sw2:"#c9c9c9"},
+  {sku:"045-AAA-50MM-EST", cat:"Cintas grises", name:"Calidad AAA", spec:'Gris · Ancho 5 cm (2") · 633 cd.lx · 60 ciclos certificados', pm:1.40, sw1:"#8a8a8a", sw2:"#dcdcdc"},
+  {sku:"063-MAX-50MM-EST", cat:"Cintas grises", name:"MAX 100", spec:'Gris · Ancho 5 cm (2") · alta resistencia · ANSI/ISEA 107-2020 y SAE 2024', pm:2.00, sw1:"#7a7a7a", sw2:"#d0d0d0"},
+  {sku:"023-AA-50MM-EST", cat:"Cintas grises", name:"Calidad AA", spec:'Gris · Ancho 5 cm (2") · 450 cd.lx · 35 ciclos de lavado', pm:0.94, sw1:"#8a8a8a", sw2:"#c9c9c9"},
+  {sku:"007-SE+50MM", cat:"Cintas grises", name:"Super Económica", spec:'Gris · Ancho 5 cm (2") · 100% poliéster · respaldo de tela', pm:0.21, sw1:"#9a9a9a", sw2:"#c0c0c0"},
+  {sku:"213-TRG01-50MM", cat:"Microprismáticas", name:"TRG 500", spec:'Blanco · Ancho 5 cm (2") · 75 ciclos · 17.170 microprismas / pulg²', pm:2.10, sw1:"#e6e6e6", sw2:"#ffffff"},
+  {sku:"221-CH01-50MM", cat:"Microprismáticas", name:"Ajedrezado Checkers", spec:'Gris metalizado y azul · Ancho 5 cm (2") · 1000 cdlx · 100 ciclos', pm:2.97, sw1:"#7d8a99", sw2:"#c9d3dc"},
+  {sku:"207-AGTFB-50MM", cat:"Microprismáticas", name:"AGT FB", spec:'Gris llano metalizado · Ancho 5 cm (2") · microprismas Reflomax', pm:2.99, sw1:"#8a8a8a", sw2:"#d6d6d6"},
+  {sku:"133-BFCKR-V-50MM", cat:"Bicolores", name:"Faja cosida KR500", spec:'Verde fluo y naranja · Ancho 5 cm (2") · 500 cd.lx · 50 ciclos de lavado', pm:0.78, sw1:"#e8622c", sw2:"#c7e13a"},
+  {sku:"148-BFCAAA-V-50MM", cat:"Bicolores", name:"Faja cosida AAA", spec:'4 colores · Ancho 5 cm (2") · 633 cd.lx · 60 ciclos de lavado', pm:1.00, sw1:"#e8622c", sw2:"#f2d43a"},
+  {sku:"181-BOCAAA-A-50MM", cat:"Bicolores", name:"Oxford cosida AAA", spec:'Amarillo fluo y naranja · Ancho 5 cm (2") · 633 cd.lx · 60 ciclos', pm:1.00, sw1:"#f2c72a", sw2:"#e8622c"},
+  {sku:"171-BO-A-50MM", cat:"Bicolores", name:"Oxford termofijada", spec:'Amarillo fluo y naranja · Ancho 5 cm (2") · 450 cd.lx · 25 ciclos domésticos', pm:0.55, sw1:"#f2c72a", sw2:"#e8622c"},
+  {sku:"102-BF-N-50MM", cat:"Bicolores", name:"Faja termofijada", spec:'3 colores · Ancho 5 cm (2") · 380 cd.lx · 15 ciclos domésticos', pm:0.35, sw1:"#e8622c", sw2:"#f2d43a"},
+  {sku:"330-VINSEG-AAA", cat:"Vinil", name:"Vinil segmentado", spec:'Gris y bicolor fluo · Ancho 5 cm (2") · 500 cdlx · 50 lavados', pm:1.42, sw1:"#8a8a8a", sw2:"#e8622c"},
+  {sku:"321-VIN-PREM-50MM", cat:"Vinil", name:"Vinil continuo Premium", spec:'Gris · Ancho 5 cm (2") · vinil de termofijación', pm:0.90, sw1:"#8a8a8a", sw2:"#cfcfcf"},
+];
+
+/* ---------- rendering ---------- */
+function renderCats(filter){
+  const el = document.getElementById('catGrid');
+  const list = categoryData.filter(c => filter==='todas' ? true : c.cert===filter);
+  el.innerHTML = list.map(c => `
+    <div class="cat-card">
+      <span class="num">${c.num}</span>
+      <span class="tag ${c.cert==='si'?'tag-cert':'tag-nocert'}">${c.cert==='si'?'Certificada':'No certificada'}</span>
+      <h4>${c.name}</h4>
+      <p>${c.desc}</p>
+      <a href="#" onclick="return false;">Ver productos</a>
+    </div>`).join('');
+}
+function filterCats(f, btn){
+  document.querySelectorAll('.chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderCats(f);
+}
+
+function renderIndustries(){
+  document.getElementById('indGrid').innerHTML = industryData.map(i => `
+    <div class="ind-card">
+      <div class="ind-ph">Foto pendiente</div>
+      <div class="ind-body">
+        <span class="num">${i.num}</span>
+        <h4>${i.name}</h4>
+        <p>${i.desc}</p>
+      </div>
+    </div>`).join('');
+}
+
+function renderProducts(){
+  document.getElementById('prodGrid').innerHTML = productData.map((p, idx) => `
+    <div class="prod-card">
+      <div class="swatch" style="--sw1:${p.sw1}; --sw2:${p.sw2};"></div>
+      <div class="prod-body">
+        <span class="cat">${p.cat}</span>
+        <h4>${p.name}</h4>
+        <p class="spec">${p.spec}</p>
+        <p class="price">$${p.pm.toFixed(2)}/m <small>· $${(p.pm*100).toFixed(2)} / rollo 100 m</small></p>
+        <button class="btn btn-outline btn-sm" onclick="viewProduct(${idx})">Ver producto</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ---------- carousel ---------- */
+let carIndex = 0;
+function renderCarouselDots(){
+  document.querySelectorAll('.dots .dot').forEach((d,i)=>d.classList.toggle('active', i===carIndex));
+}
+function setCarouselSlide(i){
+  carIndex = i;
+  document.getElementById('carTrack').style.transform = `translateX(-${i*100}%)`;
+  renderCarouselDots();
+}
+function carNext(){ setCarouselSlide((carIndex+1)%2); }
+function carPrev(){ setCarouselSlide(carIndex===0 ? 1 : 0); }
+function goToCarousel(persona){
+  showScreen('screen-home');
+  setCarouselSlide(persona==='confeccionista' ? 1 : 0);
+  setTimeout(()=>{ document.getElementById('sec-carousel').scrollIntoView({behavior:'smooth', block:'start'}); }, 60);
+}
+
+/* ---------- screen routing ---------- */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function scrollToId(id){
+  showScreen('screen-home');
+  setTimeout(()=>{ document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'}); }, 30);
+}
+function goHome(scrollId){
+  showScreen('screen-home');
+  if(scrollId){ setTimeout(()=>{ document.getElementById(scrollId).scrollIntoView({behavior:'smooth', block:'start'}); }, 60); }
+}
+function goAbout(scrollId){
+  showScreen('screen-about');
+  if(scrollId){ setTimeout(()=>{ document.getElementById(scrollId).scrollIntoView({behavior:'smooth', block:'start'}); }, 60); }
+}
+
+/* ---------- ANSI lead form ---------- */
+function toggleAnsiForm(){
+  document.getElementById('ansiForm').classList.toggle('open');
+}
+function submitAnsiForm(){
+  const name = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const err = document.getElementById('fErr');
+  if(!name || !phone){ err.style.display='block'; return; }
+  err.style.display='none';
+  document.getElementById('fOk').style.display='block';
+}
+
+/* ---------- product / quantity in rolls ---------- */
+let currentProduct = null;
+let qtyMeters = 100;
+function populateProduct(idx){
+  currentProduct = productData[idx];
+  qtyMeters = 100;
+  document.getElementById('pCat').textContent = currentProduct.cat;
+  document.getElementById('pName').textContent = currentProduct.name;
+  document.getElementById('pSpec').textContent = currentProduct.spec;
+  document.getElementById('pPriceM').textContent = '$' + currentProduct.pm.toFixed(2);
+  document.getElementById('pPriceRoll').textContent = '$' + (currentProduct.pm*100).toFixed(2);
+  document.getElementById('prodPhoto').style.background =
+    `repeating-linear-gradient(45deg, ${currentProduct.sw1}, ${currentProduct.sw1} 14px, ${currentProduct.sw2} 14px, ${currentProduct.sw2} 28px)`;
+  updateQtyDisplay();
+}
+function viewProduct(idx){
+  populateProduct(idx);
+  showScreen('screen-product');
+}
+function updateQtyDisplay(){
+  document.getElementById('qtyInput').value = qtyMeters;
+  const rolls = qtyMeters/100;
+  document.getElementById('qtyRollsLabel').textContent = rolls + (rolls===1 ? ' rollo' : ' rollos');
+  document.getElementById('qtyTotal').textContent = '$' + (qtyMeters*currentProduct.pm).toFixed(2);
+}
+function changeQty(deltaRolls){
+  qtyMeters = Math.max(100, qtyMeters + deltaRolls*100);
+  updateQtyDisplay();
+}
+function onQtyInput(val){
+  let n = parseInt(val, 10);
+  if(isNaN(n) || n < 100) n = 100;
+  n = Math.round(n/100)*100;
+  qtyMeters = n;
+  updateQtyDisplay();
+}
+
+/* ---------- cart ---------- */
+let cartCount = 0;
+function addToCart(){
+  cartCount++;
+  ['cartBadge','cartBadge2','cartBadge3'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = cartCount;
+  });
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  renderCats('todas');
+  renderIndustries();
+  renderProducts();
+  setCarouselSlide(0);
+  populateProduct(0);
+
+  document.getElementById('ctaContratista').href = waLink('Hola, soy contratista y necesito asesoría técnica gratuita.');
+  document.getElementById('ctaConfeccionista').href = waLink('Hola, soy confeccionista y quiero conocer precios al por mayor.');
+  document.getElementById('waFooter').href = waLink('Hola, quiero información general de Normax.');
+});
+</script>
+</body>
+</html>
